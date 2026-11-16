@@ -508,11 +508,19 @@
                 return;
             }
 
-            if (this.layer.zoomToShowLayer) {
-                this.layer.zoomToShowLayer(marker, () => marker.openPopup());
-            } else {
+            const open = () => {
+                if (this.layer.zoomToShowLayer) {
+                    this.layer.zoomToShowLayer(marker, () => marker.openPopup());
+                } else {
+                    marker.openPopup();
+                }
+            };
+
+            if (this.map.getZoom() < 14) {
+                this.map.once('moveend', open);
                 this.map.setView(marker.getLatLng(), 14);
-                marker.openPopup();
+            } else {
+                open();
             }
         }
     }
