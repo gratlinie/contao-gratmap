@@ -1,5 +1,9 @@
 # Changelog
 
+## Unveröffentlicht
+
+- Backend: Der Stift an der Sammlung heißt jetzt „Sammlung ID … bearbeiten“ (vorher gleich wie „Standorte … bearbeiten“).
+
 ## 1.0.0 – 2026-11-16
 
 - Backend „GratMap → Standorte“: Sammlungen, Kategorien, Standorte (Adresse mit Land, Kontakt, Logo, Text,
