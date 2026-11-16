@@ -254,9 +254,19 @@
                     item.el.hidden = !this.matches(item);
                 });
 
-                this.groups.querySelectorAll('[data-gm-group]').forEach((group) => {
-                    group.hidden = !group.querySelector('[data-gm-item]:not([hidden])');
+                const groups = [...this.groups.querySelectorAll('[data-gm-group]')];
+                const filtered = Boolean(this.state.country || this.state.category);
+
+                groups.forEach((group) => {
+                    const visible = [...group.querySelectorAll('[data-gm-item]:not([hidden])')];
+                    group.hidden = !visible.length;
+                    this.updateGroupHead(group, visible);
                 });
+
+                const visibleGroups = groups.filter((group) => !group.hidden);
+                if (filtered && visibleGroups.length === 1 && 'open' in visibleGroups[0]) {
+                    visibleGroups[0].open = true;
+                }
 
                 this.results.hidden = true;
                 this.groups.hidden = false;
@@ -274,6 +284,19 @@
 
             this.shown = shown;
             this.updateMap(fit);
+        }
+
+        updateGroupHead(group, visible) {
+            const count = group.querySelector('[data-gm-group-count]');
+            const cities = group.querySelector('[data-gm-group-cities]');
+
+            if (count) {
+                count.textContent = format(visible.length === 1 ? this.labels.groupCountOne : this.labels.groupCount, visible.length);
+            }
+
+            if (cities) {
+                cities.textContent = [...new Set(visible.map((el) => el.dataset.gmCity).filter(Boolean))].join(', ');
+            }
         }
 
         setupMap() {

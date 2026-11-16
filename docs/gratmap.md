@@ -23,10 +23,10 @@
 |---|---|
 | Sammlungen | Welche Standorte gezeigt werden |
 | Ansicht | Karte und Liste / nur Karte / nur Liste |
-| Liste gruppieren | Heimatland nach PLZ-Bereich (erste Ziffer), andere Länder nach Land – oder nach Land / gar nicht |
+| Liste gruppieren | Heimatland nach PLZ-Bereich (erste Ziffer), andere Länder nach Land – oder nach Land / gar nicht. Gruppen erscheinen als zugeklappte Akkordeons mit Anzahl und Ortsvorschau; ohne Gruppierung als flache Liste |
 | Heimatland | Wird zuerst gelistet; bei Adressen dort entfällt die Landesangabe |
 | Filter | Umkreissuche, Land, Kategorie. Land erscheint erst ab zwei Ländern, Kategorie nur wenn es welche gibt |
-| Umkreise (km) | Kommagetrennt, der zweite Wert ist vorausgewählt |
+| Umkreise (km) | Kommagetrennt (auch Leer-/Semikolon), wird beim Speichern sortiert; der zweite Wert ist vorausgewählt |
 | Link „Route planen“ | Google-Maps-Route zur Adresse (öffnet neuen Tab) |
 | Bildgröße | Größe der Logos in der Liste |
 | Kartenstil | Kachel-Anbieter (siehe unten) |
@@ -70,8 +70,9 @@ Alle Werte sind CSS-Variablen am Element `.gm` (Standardwerte mit Null-Spezifit�
 | `--gm-surface` / `--gm-surface-alt` | `#fff` / 4 % Textfarbe |
 | `--gm-border` / `--gm-muted` | 14 % / 60 % Textfarbe |
 | `--gm-radius` / `--gm-gap` | `0.5rem` / `1.25rem` |
+| `--gm-control-height` | `3rem` (Höhe von Eingabefeldern und Buttons im Filter) |
 | `--gm-map-height` | `clamp(22rem, 60svh, 40rem)` |
-| `--gm-columns` | `18rem` (Mindestbreite der Karten in der Liste) |
+| `--gm-columns` | `16rem` (Mindestbreite der Karten in der Liste) |
 
 Template: `content_element/gm_map.html.twig` (Override in `templates/`). JS-Hooks laufen über `data-gm-*`-Attribute.
 

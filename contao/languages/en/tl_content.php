@@ -12,6 +12,7 @@ $GLOBALS['TL_LANG']['tl_content']['gmGroupBy'] = ['Group list', 'Home country by
 $GLOBALS['TL_LANG']['tl_content']['gmHomeCountry'] = ['Home country', 'Listed first; the country is omitted from addresses there.'];
 $GLOBALS['TL_LANG']['tl_content']['gmFilters'] = ['Filters', 'Country and category filters only appear if there is more than one country or any categories.'];
 $GLOBALS['TL_LANG']['tl_content']['gmRadii'] = ['Radii (km)', 'Comma-separated, the second value is preselected.'];
+$GLOBALS['TL_LANG']['tl_content']['gmRadiiInvalid'] = 'Please enter whole kilometre values separated by commas (e.g. 25,50,100).';
 $GLOBALS['TL_LANG']['tl_content']['gmRoute'] = ['“Get directions” link', 'Opens Google Maps with the address as destination.'];
 $GLOBALS['TL_LANG']['tl_content']['gmTileProvider'] = ['Map style', 'Tile provider.'];
 $GLOBALS['TL_LANG']['tl_content']['gmTileKey'] = ['API key', 'Key of the map provider.'];

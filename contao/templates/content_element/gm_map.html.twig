@@ -81,19 +81,25 @@
             <ol class="gm-items gm-items--results" data-gm-results hidden></ol>
             <div class="gm-groups" data-gm-groups>
                 {% for group in gm_groups %}
-                    <section class="gm-group" data-gm-group>
+                    {% set group_tag = group.label ? 'details' : 'div' %}
+                    <{{ group_tag }} class="gm-group" data-gm-group>
                         {% if group.label %}
-                            <h3 class="gm-group__title">{{ group.label }}</h3>
+                            <summary class="gm-group__head">
+                                <span class="gm-group__title">{{ group.label }}</span>
+                                <span class="gm-group__count" data-gm-group-count>{{ (group.items|length == 1 ? 'MSC.gm_group_count_one' : 'MSC.gm_group_count')|trans([group.items|length]) }}</span>
+                                <span class="gm-group__cities" data-gm-group-cities>{{ group.cities }}</span>
+                                <span class="gm-group__icon" aria-hidden="true"></span>
+                            </summary>
                         {% endif %}
                         <ul class="gm-items">
                             {% for item in group.items %}
-                                <li class="gm-item" data-gm-item="{{ item.id }}" data-gm-country="{{ item.country }}" data-gm-categories="{{ item.categories|join(',') }}"{% if item.lat is not null %} data-gm-lat="{{ item.lat }}" data-gm-lng="{{ item.lng }}"{% endif %}>
+                                <li class="gm-item" data-gm-item="{{ item.id }}" data-gm-country="{{ item.country }}" data-gm-city="{{ item.city }}" data-gm-categories="{{ item.categories|join(',') }}"{% if item.lat is not null %} data-gm-lat="{{ item.lat }}" data-gm-lng="{{ item.lng }}"{% endif %}>
                                     <article class="gm-card">
                                         {% if item.logo %}
                                             <div class="gm-card__logo">{{ include('@Contao/component/_figure.html.twig', {figure: item.logo}) }}</div>
                                         {% endif %}
                                         <div class="gm-card__body" data-gm-card-body>
-                                            <h4 class="gm-card__title">{{ item.title }}</h4>
+                                            <h3 class="gm-card__title">{{ item.title }}</h3>
                                             {% if item.categoryTitles %}
                                                 <p class="gm-card__categories">{{ item.categoryTitles|join(', ') }}</p>
                                             {% endif %}
@@ -126,7 +132,7 @@
                                 </li>
                             {% endfor %}
                         </ul>
-                    </section>
+                    </{{ group_tag }}>
                 {% endfor %}
             </div>
             <p class="gm-empty" data-gm-empty hidden>{{ 'MSC.gm_empty'|trans }}</p>

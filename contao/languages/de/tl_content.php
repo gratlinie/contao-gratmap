@@ -12,6 +12,7 @@ $GLOBALS['TL_LANG']['tl_content']['gmGroupBy'] = ['Liste gruppieren', 'Im Heimat
 $GLOBALS['TL_LANG']['tl_content']['gmHomeCountry'] = ['Heimatland', 'Wird zuerst gelistet; das Land wird bei Adressen dort nicht ausgegeben.'];
 $GLOBALS['TL_LANG']['tl_content']['gmFilters'] = ['Filter', 'Land- und Kategorienfilter erscheinen nur, wenn es mehr als ein Land bzw. Kategorien gibt.'];
 $GLOBALS['TL_LANG']['tl_content']['gmRadii'] = ['Umkreise (km)', 'Kommagetrennt, der zweite Wert ist vorausgewählt.'];
+$GLOBALS['TL_LANG']['tl_content']['gmRadiiInvalid'] = 'Bitte nur ganze Kilometerwerte, durch Komma getrennt, eingeben (z. B. 25,50,100).';
 $GLOBALS['TL_LANG']['tl_content']['gmRoute'] = ['Link „Route planen“', 'Öffnet Google Maps mit der Adresse als Ziel.'];
 $GLOBALS['TL_LANG']['tl_content']['gmTileProvider'] = ['Kartenstil', 'Anbieter der Kartenkacheln.'];
 $GLOBALS['TL_LANG']['tl_content']['gmTileKey'] = ['API-Schlüssel', 'Schlüssel des Kartenanbieters.'];

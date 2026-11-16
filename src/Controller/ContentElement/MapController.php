@@ -198,12 +198,12 @@ class MapController extends AbstractContentElementController
     /**
      * @param list<array<string, mixed>> $items
      *
-     * @return list<array{key: string, label: string, items: list<array<string, mixed>>}>
+     * @return list<array{key: string, label: string, cities: string, items: list<array<string, mixed>>}>
      */
     private function group(array $items, string $groupBy, string $home): array
     {
         if (!\in_array($groupBy, ['country', 'postal'], true)) {
-            return [['key' => 'all', 'label' => '', 'items' => $items]];
+            return [['key' => 'all', 'label' => '', 'cities' => '', 'items' => $items]];
         }
 
         $groups = [];
@@ -220,6 +220,10 @@ class MapController extends AbstractContentElementController
 
             $groups[$key] ??= ['key' => $key, 'label' => $label, 'items' => []];
             $groups[$key]['items'][] = $item;
+        }
+
+        foreach ($groups as &$group) {
+            $group['cities'] = implode(', ', array_values(array_unique(array_filter(array_column($group['items'], 'city')))));
         }
 
         return array_values($groups);
@@ -249,7 +253,7 @@ class MapController extends AbstractContentElementController
     {
         $labels = [];
 
-        foreach (['locating', 'locateFailed', 'yourLocation', 'searching', 'rateLimit', 'notFound', 'countRadius', 'nearest', 'count'] as $key) {
+        foreach (['locating', 'locateFailed', 'yourLocation', 'searching', 'rateLimit', 'notFound', 'countRadius', 'nearest', 'count', 'groupCount', 'groupCountOne'] as $key) {
             $labels[$key] = (string) ($GLOBALS['TL_LANG']['MSC']['gm_js'][$key] ?? $key);
         }
 

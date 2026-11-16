@@ -19,6 +19,8 @@ $GLOBALS['TL_LANG']['MSC']['gm_consent_remember'] = 'Always load maps';
 $GLOBALS['TL_LANG']['MSC']['gm_show_on_map'] = 'Show on map';
 $GLOBALS['TL_LANG']['MSC']['gm_route'] = 'Get directions';
 $GLOBALS['TL_LANG']['MSC']['gm_empty'] = 'No entries found.';
+$GLOBALS['TL_LANG']['MSC']['gm_group_count'] = '%s entries';
+$GLOBALS['TL_LANG']['MSC']['gm_group_count_one'] = '%s entry';
 $GLOBALS['TL_LANG']['MSC']['gm_postal_area'] = 'Postcode area %s';
 
 $GLOBALS['TL_LANG']['MSC']['gm_js'] = [
@@ -31,4 +33,6 @@ $GLOBALS['TL_LANG']['MSC']['gm_js'] = [
     'countRadius' => '%s entries within %s km of %s',
     'nearest' => 'No entries within %s km of %s. The nearest ones:',
     'count' => '%s entries',
+    'groupCount' => '%s entries',
+    'groupCountOne' => '%s entry',
 ];

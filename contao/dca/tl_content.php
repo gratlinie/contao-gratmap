@@ -51,7 +51,7 @@ $GLOBALS['TL_DCA']['tl_content']['fields'] += [
     ],
     'gmRadii' => [
         'inputType' => 'text',
-        'eval' => ['maxlength' => 64, 'rgxp' => 'natural', 'tl_class' => 'w50'],
+        'eval' => ['maxlength' => 64, 'tl_class' => 'w50'],
         'sql' => ['type' => 'string', 'length' => 64, 'default' => '25,50,100,200'],
     ],
     'gmRoute' => [

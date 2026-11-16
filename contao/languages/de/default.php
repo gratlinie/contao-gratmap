@@ -19,6 +19,8 @@ $GLOBALS['TL_LANG']['MSC']['gm_consent_remember'] = 'Karten immer laden';
 $GLOBALS['TL_LANG']['MSC']['gm_show_on_map'] = 'Auf der Karte zeigen';
 $GLOBALS['TL_LANG']['MSC']['gm_route'] = 'Route planen';
 $GLOBALS['TL_LANG']['MSC']['gm_empty'] = 'Keine Einträge gefunden.';
+$GLOBALS['TL_LANG']['MSC']['gm_group_count'] = '%s Einträge';
+$GLOBALS['TL_LANG']['MSC']['gm_group_count_one'] = '%s Eintrag';
 $GLOBALS['TL_LANG']['MSC']['gm_postal_area'] = 'PLZ-Bereich %s';
 
 $GLOBALS['TL_LANG']['MSC']['gm_js'] = [
@@ -31,4 +33,6 @@ $GLOBALS['TL_LANG']['MSC']['gm_js'] = [
     'countRadius' => '%s Einträge im Umkreis von %s km um %s',
     'nearest' => 'Im Umkreis von %s km um %s gibt es keinen Eintrag. Die nächstgelegenen:',
     'count' => '%s Einträge',
+    'groupCount' => '%s Einträge',
+    'groupCountOne' => '%s Eintrag',
 ];

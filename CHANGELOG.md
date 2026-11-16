@@ -9,4 +9,6 @@
 - Inhaltselement „Standortkarte“ (`gm_map`): Karte und/oder Liste, Cluster mit Klick-Zoom,
   Umkreissuche (PLZ/Ort, „Mein Standort“), Länder- und Kategorienfilter, Gruppierung nach PLZ-Bereich/Land,
   „Route planen“, Zwei-Klick-Lösung, wählbare Kartenkacheln, eigener Marker.
+- Liste: Gruppen als Akkordeons (Anzahl und Orte im Kopf, beim Filtern aktualisiert), kompaktere Karten.
+- Filter: Eingabefelder, Auswahl und Buttons einheitlich hoch (`--gm-control-height`).
 - `contao:migrate` ausführen.
