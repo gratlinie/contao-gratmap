@@ -1,6 +1,6 @@
 # Changelog
 
-## Unveröffentlicht
+## 1.0.1 – 2026-11-16
 
 - „Auf der Karte zeigen“ zoomt jetzt mindestens auf Stufe 14 an den Standort heran (vorher nur so weit, bis der Punkt aus dem Cluster gelöst war).
 - Backend: Der Stift an der Sammlung heißt jetzt „Sammlung ID … bearbeiten“ (vorher gleich wie „Standorte … bearbeiten“).
