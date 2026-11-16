@@ -23,6 +23,7 @@ $GLOBALS['TL_LANG']['MSC']['gm_empty'] = 'No entries found.';
 $GLOBALS['TL_LANG']['MSC']['gm_group_count'] = '%s entries';
 $GLOBALS['TL_LANG']['MSC']['gm_group_count_one'] = '%s entry';
 $GLOBALS['TL_LANG']['MSC']['gm_postal_area'] = 'Postcode area %s';
+$GLOBALS['TL_LANG']['MSC']['gm_abroad'] = 'Other countries';
 
 $GLOBALS['TL_LANG']['MSC']['gm_js'] = [
     'locating' => 'Determining your location …',

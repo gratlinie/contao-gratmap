@@ -80,13 +80,19 @@
 
         <div class="gm-list" data-gm-list{% if gm_view == 'map' %} hidden{% endif %}>
             <ol class="gm-items gm-items--results" data-gm-results hidden></ol>
+            {% set has_sections = gm_sections|length > 1 %}
+            {% set card_tag = has_sections ? 'h4' : 'h3' %}
             <div class="gm-groups" data-gm-groups>
-                {% for group in gm_groups %}
+                {% for section in gm_sections %}
+                    {% if section.label %}<section class="gm-section" data-gm-section>
+                        <h3 class="gm-section__title">{% if section.flag %}<img class="gm-flag" src="{{ section.flag }}" alt="" width="20" height="15">{% endif %}{{ section.label }}</h3>
+                    {% endif %}
+                {% for group in section.groups %}
                     {% set group_tag = group.label ? 'details' : 'div' %}
                     <{{ group_tag }} class="gm-group" data-gm-group>
                         {% if group.label %}
                             <summary class="gm-group__head">
-                                <span class="gm-group__title">{{ group.label }}</span>
+                                <span class="gm-group__title">{% if group.flag %}<img class="gm-flag" src="{{ group.flag }}" alt="" width="20" height="15">{% endif %}{{ group.label }}</span>
                                 <span class="gm-group__count" data-gm-group-count>{{ (group.items|length == 1 ? 'MSC.gm_group_count_one' : 'MSC.gm_group_count')|trans([group.items|length]) }}</span>
                                 <span class="gm-group__cities" data-gm-group-cities>{{ group.cities }}</span>
                                 <span class="gm-group__icon" aria-hidden="true"></span>
@@ -100,7 +106,7 @@
                                             <div class="gm-card__logo">{{ include('@Contao/component/_figure.html.twig', {figure: item.logo}) }}</div>
                                         {% endif %}
                                         <div class="gm-card__body" data-gm-card-body>
-                                            <h3 class="gm-card__title">{{ item.title }}</h3>
+                                            <{{ card_tag }} class="gm-card__title">{{ item.title }}</{{ card_tag }}>
                                             {% if item.categoryTitles %}
                                                 <p class="gm-card__categories">{{ item.categoryTitles|join(', ') }}</p>
                                             {% endif %}
@@ -134,6 +140,8 @@
                             {% endfor %}
                         </ul>
                     </{{ group_tag }}>
+                {% endfor %}
+                    {% if section.label %}</section>{% endif %}
                 {% endfor %}
             </div>
             <p class="gm-empty" data-gm-empty hidden>{{ 'MSC.gm_empty'|trans }}</p>

@@ -66,6 +66,7 @@ class MapController extends AbstractContentElementController
         });
 
         $groups = $this->group($items, (string) $model->gmGroupBy, $home);
+        $sections = $this->sections($groups, $home, $countryNames);
         $usedCountries = array_values(array_unique(array_column($items, 'country')));
         $countryOptions = [];
 
@@ -109,6 +110,7 @@ class MapController extends AbstractContentElementController
         $template->set('gm_view', $view);
         $template->set('gm_items', $items);
         $template->set('gm_groups', $groups);
+        $template->set('gm_sections', $sections);
         $template->set('gm_filters', [
             'radius' => \in_array('radius', $filters, true),
             'country' => \in_array('country', $filters, true) && \count($countryOptions) > 1,
@@ -200,17 +202,19 @@ class MapController extends AbstractContentElementController
     /**
      * @param list<array<string, mixed>> $items
      *
-     * @return list<array{key: string, label: string, cities: string, items: list<array<string, mixed>>}>
+     * @return list<array{key: string, label: string, country: string, flag: string|null, cities: string, items: list<array<string, mixed>>}>
      */
     private function group(array $items, string $groupBy, string $home): array
     {
         if (!\in_array($groupBy, ['country', 'postal'], true)) {
-            return [['key' => 'all', 'label' => '', 'cities' => '', 'items' => $items]];
+            return [['key' => 'all', 'label' => '', 'country' => '', 'flag' => null, 'cities' => '', 'items' => $items]];
         }
 
         $groups = [];
 
         foreach ($items as $item) {
+            $flag = null;
+
             if ('postal' === $groupBy && $item['country'] === $home && '' !== $item['postal']) {
                 $digit = $item['postal'][0];
                 $key = 'postal-'.$digit;
@@ -218,9 +222,10 @@ class MapController extends AbstractContentElementController
             } else {
                 $key = 'country-'.strtolower($item['country']);
                 $label = $item['countryName'];
+                $flag = $this->flag($item['country']);
             }
 
-            $groups[$key] ??= ['key' => $key, 'label' => $label, 'items' => []];
+            $groups[$key] ??= ['key' => $key, 'label' => $label, 'country' => $item['country'], 'flag' => $flag, 'items' => []];
             $groups[$key]['items'][] = $item;
         }
 
@@ -229,6 +234,41 @@ class MapController extends AbstractContentElementController
         }
 
         return array_values($groups);
+    }
+
+    /**
+     * Bei PLZ-Gruppierung mit Einträgen aus mehreren Ländern: Abschnitt „Heimatland“ (PLZ-Bereiche) und
+     * „Weitere Länder“ (je Land eine Gruppe mit Flagge). Sonst ein Abschnitt ohne Überschrift.
+     *
+     * @param list<array<string, mixed>> $groups
+     * @param array<string, string>      $countryNames
+     *
+     * @return list<array{label: string, flag: string|null, groups: list<array<string, mixed>>}>
+     */
+    private function sections(array $groups, string $home, array $countryNames): array
+    {
+        $local = array_values(array_filter($groups, static fn (array $g): bool => str_starts_with($g['key'], 'postal-')));
+        $abroad = array_values(array_filter($groups, static fn (array $g): bool => !str_starts_with($g['key'], 'postal-')));
+
+        if (!$local || !$abroad) {
+            return [['label' => '', 'flag' => null, 'groups' => $groups]];
+        }
+
+        return [
+            ['label' => $countryNames[$home] ?? $home, 'flag' => $this->flag($home), 'groups' => $local],
+            ['label' => $GLOBALS['TL_LANG']['MSC']['gm_abroad'] ?? 'Weitere Länder', 'flag' => null, 'groups' => $abroad],
+        ];
+    }
+
+    private function flag(string $country): string|null
+    {
+        $code = strtolower($country);
+
+        if (1 !== preg_match('/^[a-z]{2}$/', $code) || !is_file($this->webDir.'/bundles/gratliniegratmap/vendor/flag-icons/4x3/'.$code.'.svg')) {
+            return null;
+        }
+
+        return '/bundles/gratliniegratmap/vendor/flag-icons/4x3/'.$code.'.svg';
     }
 
     /**

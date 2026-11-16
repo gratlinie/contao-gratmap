@@ -270,8 +270,39 @@ details.gm-group {
     border-bottom: 1px solid var(--gm-border);
 }
 
-details.gm-group:first-child {
+details.gm-group:first-of-type {
     border-top: 1px solid var(--gm-border);
+}
+
+.gm-groups:has(> .gm-section) {
+    gap: calc(var(--gm-gap) * 2.25);
+}
+
+.gm-section__title {
+    display: flex;
+    align-items: center;
+    gap: 0.6em;
+    margin: 0 0 0.75rem;
+    font-size: 1.375em;
+    line-height: 1.25;
+}
+
+.gm-flag {
+    flex: none;
+    display: inline-block;
+    width: 1.25em;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    margin: 0 0.6em 0 0;
+    vertical-align: -0.125em;
+    object-fit: cover;
+    border-radius: 0.125rem;
+    box-shadow: 0 0 0 1px var(--gm-border);
+}
+
+.gm-section__title .gm-flag {
+    margin: 0;
+    vertical-align: baseline;
 }
 
 .gm-group__head {

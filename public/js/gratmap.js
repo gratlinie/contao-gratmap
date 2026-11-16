@@ -263,6 +263,10 @@
                     this.updateGroupHead(group, visible);
                 });
 
+                this.groups.querySelectorAll('[data-gm-section]').forEach((section) => {
+                    section.hidden = !section.querySelector('[data-gm-group]:not([hidden])');
+                });
+
                 const visibleGroups = groups.filter((group) => !group.hidden);
                 if (filtered && visibleGroups.length === 1 && 'open' in visibleGroups[0]) {
                     visibleGroups[0].open = true;

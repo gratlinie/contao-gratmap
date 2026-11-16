@@ -23,7 +23,7 @@
 |---|---|
 | Sammlungen | Welche Standorte gezeigt werden |
 | Ansicht | Karte und Liste / nur Karte / nur Liste |
-| Liste gruppieren | Heimatland nach PLZ-Bereich (erste Ziffer), andere Länder nach Land – oder nach Land / gar nicht. Gruppen erscheinen als zugeklappte Akkordeons mit Anzahl und Ortsvorschau; ohne Gruppierung als flache Liste |
+| Liste gruppieren | Heimatland nach PLZ-Bereich (erste Ziffer), andere Länder nach Land – oder nach Land / gar nicht. Gruppen erscheinen als zugeklappte Akkordeons mit Anzahl und Ortsvorschau; ohne Gruppierung als flache Liste. Gibt es PLZ-Bereiche und andere Länder, trennt die Liste in zwei Abschnitte: Heimatland (mit Flagge) und „Weitere Länder“; Ländergruppen tragen ihre Flagge |
 | Heimatland | Wird zuerst gelistet; bei Adressen dort entfällt die Landesangabe |
 | Filter | Umkreissuche, Land, Kategorie. Land erscheint erst ab zwei Ländern, Kategorie nur wenn es welche gibt |
 | Umkreise (km) | Kommagetrennt (auch Leer-/Semikolon), wird beim Speichern sortiert; der zweite Wert ist vorausgewählt |
@@ -81,6 +81,7 @@ Template: `content_element/gm_map.html.twig` (Override in `templates/`). JS-Hook
 ## Datenschutz
 
 - Leaflet und MarkerCluster liegen im Bundle, keine CDNs.
+- Länderflaggen aus [flag-icons](https://github.com/lipis/flag-icons) 7.6.0 (MIT, `public/vendor/flag-icons/`).
 - Geocoding läuft serverseitig – die IP der Besucher geht nicht an Nominatim.
 - Kartenkacheln kommen vom gewählten Anbieter; deshalb die Zwei-Klick-Lösung. Mit dem PCT Privacy Manager
   (`PrivacyManager.hasAccess()`, Event `Privacy.changed`) greift dessen Freigabe; andere Consent-Tools werden nicht
