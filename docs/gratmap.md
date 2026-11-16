@@ -80,7 +80,7 @@ Template: `content_element/gm_map.html.twig` (Override in `templates/`). JS-Hook
 
 ## Datenschutz
 
-- Leaflet und MarkerCluster liegen im Bundle, keine CDNs.
+- Leaflet 1.9.4 (BSD-2-Clause) und Leaflet.markercluster 1.5.3 (MIT) liegen im Bundle (`public/vendor/`, mit Lizenzdateien), keine CDNs.
 - Länderflaggen aus [flag-icons](https://github.com/lipis/flag-icons) 7.6.0 (MIT, `public/vendor/flag-icons/`).
 - Geocoding läuft serverseitig – die IP der Besucher geht nicht an Nominatim.
 - Kartenkacheln kommen vom gewählten Anbieter; deshalb die Zwei-Klick-Lösung. Mit dem PCT Privacy Manager

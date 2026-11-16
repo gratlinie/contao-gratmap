@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.0 – unveröffentlicht
+## 1.0.0 – 2026-11-16
 
 - Backend „GratMap → Standorte“: Sammlungen, Kategorien, Standorte (Adresse mit Land, Kontakt, Logo, Text,
   Veröffentlichung mit Start/Stopp).

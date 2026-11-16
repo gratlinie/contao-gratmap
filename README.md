@@ -6,12 +6,29 @@ Liste mit Umkreissuche, Länder- und Kategorienfilter. Mehrsprachig, mehrere Lä
 - Paket: `gratlinie/contao-gratmap`, Namespace `Gratlinie\GratMapBundle`, Präfix `gm`
 - Voraussetzungen: PHP ≥ 8.2, Contao 5.7
 
-## Installation (lokal, Path-Repository)
+## Installation
+
+Das Paket liegt (noch) nicht auf Packagist. Repository in der `composer.json` der Installation eintragen:
+
+```json
+"repositories": [
+    { "type": "vcs", "url": "https://github.com/gratlinie/contao-gratmap" }
+]
+```
+
+```bash
+composer require gratlinie/contao-gratmap:^1.0
+php vendor/bin/contao-console contao:migrate
+```
+
+Im Contao Manager danach „Paket hinzufügen“ → `gratlinie/contao-gratmap` bzw. die Composer-Dateien hochladen und
+„Composer install“ ausführen, anschließend die Datenbank aktualisieren.
+
+Lokale Entwicklung mit Path-Repository:
 
 ```bash
 composer config repositories.gratmap '{"type":"path","url":"/pfad/zu/GratMap/bundle","options":{"symlink":true}}'
 composer require gratlinie/contao-gratmap:@dev
-php vendor/bin/contao-console contao:migrate
 ```
 
 Dokumentation: [docs/gratmap.md](docs/gratmap.md)
