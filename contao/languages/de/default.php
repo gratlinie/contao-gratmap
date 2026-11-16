@@ -16,6 +16,7 @@ $GLOBALS['TL_LANG']['MSC']['gm_reset'] = 'Zurücksetzen';
 $GLOBALS['TL_LANG']['MSC']['gm_consent_text'] = 'Die Karte wird von %s geladen. Dabei wird Ihre IP-Adresse an den Kartenanbieter übertragen.';
 $GLOBALS['TL_LANG']['MSC']['gm_consent_load'] = 'Karte laden';
 $GLOBALS['TL_LANG']['MSC']['gm_consent_remember'] = 'Karten immer laden';
+$GLOBALS['TL_LANG']['MSC']['gm_consent_settings'] = 'Datenschutz-Einstellungen ändern';
 $GLOBALS['TL_LANG']['MSC']['gm_show_on_map'] = 'Auf der Karte zeigen';
 $GLOBALS['TL_LANG']['MSC']['gm_route'] = 'Route planen';
 $GLOBALS['TL_LANG']['MSC']['gm_empty'] = 'Keine Einträge gefunden.';

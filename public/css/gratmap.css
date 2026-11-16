@@ -84,6 +84,22 @@
     cursor: pointer;
 }
 
+.gm .gm-filter input:hover,
+.gm .gm-filter select:hover {
+    border-color: color-mix(in srgb, currentColor 35%, transparent);
+}
+
+.gm .gm-filter input:focus,
+.gm .gm-filter select:focus {
+    background-color: var(--gm-surface);
+    border-color: var(--gm-accent);
+    border-radius: calc(var(--gm-radius) * 0.75);
+}
+
+.gm input:active {
+    transform: none;
+}
+
 .gm-filter input:focus-visible,
 .gm-filter select:focus-visible,
 .gm-button:focus-visible {
@@ -149,6 +165,14 @@
     text-underline-offset: 0.25em;
     transform: none;
     transition: text-decoration-color 0.15s;
+}
+
+.gm button.gm-button:hover {
+    border-color: var(--gm-accent);
+}
+
+.gm button.gm-button--link:hover {
+    border: 0;
 }
 
 .gm-button--link:hover,
@@ -329,7 +353,7 @@ details.gm-group:first-child {
 }
 
 details.gm-group > .gm-items {
-    padding: 0.25rem 0 calc(var(--gm-gap) * 1.25);
+    padding: var(--gm-gap) 0 calc(var(--gm-gap) * 1.5);
 }
 
 @container (width < 36rem) {

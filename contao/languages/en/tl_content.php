@@ -19,10 +19,12 @@ $GLOBALS['TL_LANG']['tl_content']['gmTileKey'] = ['API key', 'Key of the map pro
 $GLOBALS['TL_LANG']['tl_content']['gmTileUrl'] = ['Tile URL', 'Leaflet scheme, e.g. https://{s}.example.com/{z}/{x}/{y}.png'];
 $GLOBALS['TL_LANG']['tl_content']['gmTileAttribution'] = ['Attribution', 'HTML allowed.'];
 $GLOBALS['TL_LANG']['tl_content']['gmHeight'] = ['Map height', 'With unit, e.g. 32rem or 60svh. Empty = default.'];
+$GLOBALS['TL_LANG']['tl_content']['gmZoom'] = ['Initial zoom level', 'Zoom level on load, centred on all locations (6 ≈ Germany, 9 ≈ region, 12 ≈ city). Empty = fit automatically.'];
 $GLOBALS['TL_LANG']['tl_content']['gmMarker'] = ['Custom marker', 'SVG, PNG or WebP. Empty = default pin in the accent colour.'];
 $GLOBALS['TL_LANG']['tl_content']['gmMarkerSize'] = ['Marker size (px)', ''];
 $GLOBALS['TL_LANG']['tl_content']['gmCluster'] = ['Cluster points', 'Group nearby points; click zooms in.'];
 $GLOBALS['TL_LANG']['tl_content']['gmConsent'] = ['Two-click solution', 'Load the map only after a click (privacy).'];
+$GLOBALS['TL_LANG']['tl_content']['gmPrivacyLevel'] = ['Privacy Manager (PCT)', 'Level in the Premium Contao Themes Privacy Manager from which the map loads without a click. Only used when the Privacy Manager is active on the page; otherwise the two-click solution applies. OpenStreetMap is level 2 there.'];
 
 $GLOBALS['TL_LANG']['tl_content']['gm_ref'] = [
     'view' => ['map_list' => 'Map and list', 'map' => 'Map only', 'list' => 'List only'],
@@ -36,4 +38,5 @@ $GLOBALS['TL_LANG']['tl_content']['gm_ref'] = [
         'stadia_smooth' => 'Stadia Alidade Smooth (API key)',
         'custom' => 'Custom tile URL',
     ],
+    'privacyLevel' => [1 => 'Level 1', 2 => 'Level 2', 3 => 'Level 3', 4 => 'Level 4'],
 ];

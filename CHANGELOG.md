@@ -11,4 +11,8 @@
   „Route planen“, Zwei-Klick-Lösung, wählbare Kartenkacheln, eigener Marker.
 - Liste: Gruppen als Akkordeons (Anzahl und Orte im Kopf, beim Filtern aktualisiert), kompaktere Karten.
 - Filter: Eingabefelder, Auswahl und Buttons einheitlich hoch (`--gm-control-height`).
+- Anbindung an den Privacy Manager von Premium Contao Themes (Feld „Privacy Manager (PCT)“).
+- Feld „Start-Zoomstufe“.
+- Backend: Gruppe „GratMap“ mit Lucide-Icon „pin“, direkt unter „Inhalte“.
+- Eclipse-Hover-Regeln für Buttons/Eingabefelder neutralisiert (kein Springen der Aktionslinks).
 - `contao:migrate` ausführen.

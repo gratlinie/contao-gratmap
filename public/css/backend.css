@@ -20,3 +20,11 @@
     border: 1px solid var(--border, #ddd);
     border-radius: 4px;
 }
+
+#tl_navigation .group-gratmap {
+    background: url(../icons/pin.svg) 3px 2px no-repeat;
+}
+
+html[data-color-scheme=dark] #tl_navigation .group-gratmap {
+    background-image: url(../icons/pin--dark.svg);
+}

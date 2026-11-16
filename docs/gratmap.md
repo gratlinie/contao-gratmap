@@ -2,7 +2,7 @@
 
 ## Daten pflegen
 
-**GratMap → Standorte** im Backend.
+**GratMap → Standorte** im Backend (eigene Gruppe mit Pin-Icon direkt unter „Inhalte“).
 
 - **Sammlung** – z. B. „Händler“ oder „Niederlassungen“. Ein Inhaltselement kann mehrere Sammlungen zeigen.
 - **Kategorien** (Ordner-Symbol an der Sammlung) – optional, z. B. „Fachhändler“, „Vertrieb“. Werden im
@@ -31,9 +31,11 @@
 | Bildgröße | Größe der Logos in der Liste |
 | Kartenstil | Kachel-Anbieter (siehe unten) |
 | Kartenhöhe | Mit Einheit (`32rem`, `60svh` …), leer = `clamp(22rem, 60svh, 40rem)` |
+| Start-Zoomstufe | 2–18, zentriert auf alle Standorte (6 ≈ Deutschland, 9 ≈ Region, 12 ≈ Stadt); leer = automatisch passend. Gilt ohne aktive Suche/Filter |
 | Eigener Marker | SVG/PNG/WebP; Spitze unten mittig. Leer = Pin in der Akzentfarbe |
 | Punkte bündeln | Cluster; Klick auf einen Cluster zoomt hinein |
 | Zwei-Klick-Lösung | Karte (Kacheln) erst nach Klick laden, optional „immer laden“ (localStorage) |
+| Privacy Manager (PCT) | Stufe im Privacy Manager von Premium Contao Themes (Standard 2, wie OpenStreetMap dort). Ist er auf der Seite aktiv, lädt die Karte ohne Klick, sobald die Stufe freigegeben ist – auch direkt nach der Auswahl im Opt-in. Ohne Freigabe zeigt der Platzhalter „Karte laden“ (einmalig) und „Datenschutz-Einstellungen ändern“. Leer = PCT ignorieren |
 
 ### Umkreissuche
 
@@ -80,5 +82,7 @@ Template: `content_element/gm_map.html.twig` (Override in `templates/`). JS-Hook
 
 - Leaflet und MarkerCluster liegen im Bundle, keine CDNs.
 - Geocoding läuft serverseitig – die IP der Besucher geht nicht an Nominatim.
-- Kartenkacheln kommen vom gewählten Anbieter; deshalb die Zwei-Klick-Lösung (unabhängig vom Consent-Tool).
+- Kartenkacheln kommen vom gewählten Anbieter; deshalb die Zwei-Klick-Lösung. Mit dem PCT Privacy Manager
+  (`PrivacyManager.hasAccess()`, Event `Privacy.changed`) greift dessen Freigabe; andere Consent-Tools werden nicht
+  ausgewertet.
 - Die Liste wird serverseitig ausgegeben und funktioniert ohne JavaScript und ohne Einwilligung.

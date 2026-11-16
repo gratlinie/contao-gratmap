@@ -305,8 +305,15 @@
             }
 
             const consent = this.mapEl.querySelector('[data-gm-consent]');
+            const privacy = window.PrivacyManager;
+            const level = this.config.privacyLevel;
 
-            if (consent && !storage.get()) {
+            if (consent && level && typeof privacy?.hasAccess === 'function') {
+                if (!privacy.hasAccess(level)) {
+                    this.setupPrivacyManager(consent, privacy, level);
+                    return;
+                }
+            } else if (consent && !storage.get()) {
                 consent.querySelector('[data-gm-consent-accept]').addEventListener('click', () => {
                     if (consent.querySelector('[data-gm-consent-remember]')?.checked) {
                         storage.set();
@@ -318,7 +325,34 @@
             }
 
             consent?.remove();
+            this.observeMap();
+        }
 
+        setupPrivacyManager(consent, privacy, level) {
+            const start = () => {
+                if (consent.isConnected) {
+                    consent.remove();
+                    this.initMap();
+                }
+            };
+
+            consent.querySelector('.gm-consent__remember')?.remove();
+            consent.querySelector('[data-gm-consent-accept]').addEventListener('click', start);
+
+            const settings = consent.querySelector('[data-gm-consent-settings]');
+            if (settings && typeof privacy.optout === 'function') {
+                settings.hidden = false;
+                settings.addEventListener('click', () => privacy.optout());
+            }
+
+            window.jQuery?.(document).on('Privacy.changed', () => {
+                if (privacy.hasAccess(level)) {
+                    start();
+                }
+            });
+        }
+
+        observeMap() {
             if ('IntersectionObserver' in window) {
                 const observer = new IntersectionObserver((entries) => {
                     if (entries.some((entry) => entry.isIntersecting)) {
@@ -333,6 +367,11 @@
         }
 
         async initMap() {
+            if (this.mapStarted) {
+                return;
+            }
+            this.mapStarted = true;
+
             const { assets, tiles, cluster } = this.config;
 
             this.mapEl.classList.add('is-loading');
@@ -444,7 +483,11 @@
                 return;
             }
 
-            if (bounds) {
+            const { zoom } = this.config;
+
+            if (bounds && zoom && !origin && !this.state.country && !this.state.category) {
+                this.map.setView(bounds.getCenter(), zoom);
+            } else if (bounds) {
                 this.map.fitBounds(bounds.pad(0.1), { maxZoom: origin ? 12 : 10 });
             } else {
                 this.map.setView([51, 10], 5);

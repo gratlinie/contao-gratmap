@@ -7,7 +7,7 @@ use Gratlinie\GratMapBundle\Map\TileProviders;
 
 $GLOBALS['TL_DCA']['tl_content']['palettes']['__selector__'][] = 'gmTileProvider';
 
-$GLOBALS['TL_DCA']['tl_content']['palettes']['gm_map'] = '{type_legend},type,headline;{gm_source_legend},gmArchives;{gm_view_legend},gmView,gmGroupBy,gmHomeCountry,gmFilters,gmRadii,gmRoute,size;{gm_map_legend},gmTileProvider,gmHeight,gmMarker,gmMarkerSize,gmCluster,gmConsent;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},cssID;{invisible_legend:hide},invisible,start,stop';
+$GLOBALS['TL_DCA']['tl_content']['palettes']['gm_map'] = '{type_legend},type,headline;{gm_source_legend},gmArchives;{gm_view_legend},gmView,gmGroupBy,gmHomeCountry,gmFilters,gmRadii,gmRoute,size;{gm_map_legend},gmTileProvider,gmHeight,gmZoom,gmMarker,gmMarkerSize,gmCluster,gmConsent,gmPrivacyLevel;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},cssID;{invisible_legend:hide},invisible,start,stop';
 
 $GLOBALS['TL_DCA']['tl_content']['subpalettes']['gmTileProvider_custom'] = 'gmTileUrl,gmTileAttribution';
 
@@ -59,6 +59,12 @@ $GLOBALS['TL_DCA']['tl_content']['fields'] += [
         'eval' => ['tl_class' => 'w50 m12'],
         'sql' => ['type' => 'boolean', 'default' => true],
     ],
+    'gmZoom' => [
+        'inputType' => 'select',
+        'options' => range(2, 18),
+        'eval' => ['includeBlankOption' => true, 'blankOptionLabel' => '-', 'tl_class' => 'w50'],
+        'sql' => ['type' => 'smallint', 'unsigned' => true, 'default' => 0],
+    ],
     'gmTileProvider' => [
         'inputType' => 'select',
         'options' => TileProviders::keys(),
@@ -100,6 +106,13 @@ $GLOBALS['TL_DCA']['tl_content']['fields'] += [
         'inputType' => 'checkbox',
         'eval' => ['tl_class' => 'w50 m12'],
         'sql' => ['type' => 'boolean', 'default' => true],
+    ],
+    'gmPrivacyLevel' => [
+        'inputType' => 'select',
+        'options' => [1, 2, 3, 4],
+        'reference' => &$GLOBALS['TL_LANG']['tl_content']['gm_ref']['privacyLevel'],
+        'eval' => ['includeBlankOption' => true, 'tl_class' => 'w50'],
+        'sql' => ['type' => 'smallint', 'unsigned' => true, 'default' => 2],
     ],
     'gmConsent' => [
         'inputType' => 'checkbox',

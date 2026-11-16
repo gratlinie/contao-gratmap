@@ -16,6 +16,7 @@ $GLOBALS['TL_LANG']['MSC']['gm_reset'] = 'Reset';
 $GLOBALS['TL_LANG']['MSC']['gm_consent_text'] = 'The map is loaded from %s. Your IP address will be transmitted to the map provider.';
 $GLOBALS['TL_LANG']['MSC']['gm_consent_load'] = 'Load map';
 $GLOBALS['TL_LANG']['MSC']['gm_consent_remember'] = 'Always load maps';
+$GLOBALS['TL_LANG']['MSC']['gm_consent_settings'] = 'Change privacy settings';
 $GLOBALS['TL_LANG']['MSC']['gm_show_on_map'] = 'Show on map';
 $GLOBALS['TL_LANG']['MSC']['gm_route'] = 'Get directions';
 $GLOBALS['TL_LANG']['MSC']['gm_empty'] = 'No entries found.';
