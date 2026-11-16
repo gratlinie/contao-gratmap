@@ -1,0 +1,16 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    Gratlinie\GratMapBundle\:
+        resource: ../src/
+        exclude:
+            - ../src/ContaoManager/
+            - ../src/GratlinieGratMapBundle.php
+            - ../src/Widget/
+
+    Gratlinie\GratMapBundle\Controller\Route\:
+        resource: ../src/Controller/Route/
+        public: true
+        tags: ['controller.service_arguments']

@@ -1,0 +1,135 @@
+{% extends '@Contao/content_element/_base.html.twig' %}
+{% trans_default_domain 'contao_default' %}
+
+{% block content %}
+    {% add 'gratmap_css' to head %}
+        <link rel="stylesheet" href="{{ gm_css }}">
+    {% endadd %}
+    {% add 'gratmap_js' to body %}
+        <script src="{{ gm_js }}" defer></script>
+    {% endadd %}
+
+    {% set uid = 'gm-' ~ data.id %}
+    {% set has_filter = gm_filters.radius or gm_filters.country or gm_filters.category %}
+
+    <div class="gm gm--{{ gm_view }}" data-gm>
+        <script type="application/json" data-gm-config>{{ gm_config|json_encode(constant('JSON_HEX_TAG') b-or constant('JSON_HEX_AMP') b-or constant('JSON_UNESCAPED_UNICODE'))|raw }}</script>
+
+        {% if has_filter %}
+            <form class="gm-filter" data-gm-filter role="search" novalidate>
+                {% if gm_filters.radius %}
+                    <div class="gm-filter__field gm-filter__field--query">
+                        <label for="{{ uid }}-q">{{ 'MSC.gm_query'|trans }}</label>
+                        <input type="search" id="{{ uid }}-q" name="q" autocomplete="postal-code" placeholder="{{ 'MSC.gm_query_placeholder'|trans }}" data-gm-query>
+                    </div>
+                    <div class="gm-filter__field gm-filter__field--radius">
+                        <label for="{{ uid }}-r">{{ 'MSC.gm_radius'|trans }}</label>
+                        <select id="{{ uid }}-r" name="r" data-gm-radius>
+                            {% for radius in gm_radii %}
+                                <option value="{{ radius }}"{% if loop.index == 2 or gm_radii|length == 1 %} selected{% endif %}>{{ radius }} km</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                {% endif %}
+                {% if gm_filters.country %}
+                    <div class="gm-filter__field">
+                        <label for="{{ uid }}-c">{{ 'MSC.gm_country'|trans }}</label>
+                        <select id="{{ uid }}-c" name="c" data-gm-country>
+                            <option value="">{{ 'MSC.gm_all'|trans }}</option>
+                            {% for code, name in gm_country_options %}
+                                <option value="{{ code }}">{{ name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                {% endif %}
+                {% if gm_filters.category %}
+                    <div class="gm-filter__field">
+                        <label for="{{ uid }}-k">{{ 'MSC.gm_category'|trans }}</label>
+                        <select id="{{ uid }}-k" name="k" data-gm-category>
+                            <option value="">{{ 'MSC.gm_all'|trans }}</option>
+                            {% for id, title in gm_category_options %}
+                                <option value="{{ id }}">{{ title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                {% endif %}
+                <div class="gm-filter__actions">
+                    {% if gm_filters.radius %}
+                        <button type="submit" class="gm-button">{{ 'MSC.gm_search'|trans }}</button>
+                        <button type="button" class="gm-button gm-button--ghost" data-gm-locate hidden>{{ 'MSC.gm_locate'|trans }}</button>
+                    {% endif %}
+                    <button type="reset" class="gm-button gm-button--link" data-gm-reset hidden>{{ 'MSC.gm_reset'|trans }}</button>
+                </div>
+            </form>
+        {% endif %}
+
+        <p class="gm-status" data-gm-status aria-live="polite"></p>
+
+        {% if gm_view != 'list' %}
+            <div class="gm-map" data-gm-map{% if gm_height %} style="--gm-map-height: {{ gm_height }}"{% endif %}>
+                {% if gm_config.consent %}
+                    <div class="gm-consent" data-gm-consent>
+                        <p class="gm-consent__text">{{ 'MSC.gm_consent_text'|trans([gm_tile_host]) }}</p>
+                        <button type="button" class="gm-button" data-gm-consent-accept>{{ 'MSC.gm_consent_load'|trans }}</button>
+                        <label class="gm-consent__remember"><input type="checkbox" data-gm-consent-remember> {{ 'MSC.gm_consent_remember'|trans }}</label>
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <div class="gm-list" data-gm-list{% if gm_view == 'map' %} hidden{% endif %}>
+            <ol class="gm-items gm-items--results" data-gm-results hidden></ol>
+            <div class="gm-groups" data-gm-groups>
+                {% for group in gm_groups %}
+                    <section class="gm-group" data-gm-group>
+                        {% if group.label %}
+                            <h3 class="gm-group__title">{{ group.label }}</h3>
+                        {% endif %}
+                        <ul class="gm-items">
+                            {% for item in group.items %}
+                                <li class="gm-item" data-gm-item="{{ item.id }}" data-gm-country="{{ item.country }}" data-gm-categories="{{ item.categories|join(',') }}"{% if item.lat is not null %} data-gm-lat="{{ item.lat }}" data-gm-lng="{{ item.lng }}"{% endif %}>
+                                    <article class="gm-card">
+                                        {% if item.logo %}
+                                            <div class="gm-card__logo">{{ include('@Contao/component/_figure.html.twig', {figure: item.logo}) }}</div>
+                                        {% endif %}
+                                        <div class="gm-card__body" data-gm-card-body>
+                                            <h4 class="gm-card__title">{{ item.title }}</h4>
+                                            {% if item.categoryTitles %}
+                                                <p class="gm-card__categories">{{ item.categoryTitles|join(', ') }}</p>
+                                            {% endif %}
+                                            <p class="gm-card__address">
+                                                {% if item.contact %}{{ item.contact }}<br>{% endif %}
+                                                {% if item.street %}{{ item.street }}<br>{% endif %}
+                                                {{ item.postal }} {{ item.city }}{% if item.country != gm_config.home %}<br>{{ item.countryName }}{% endif %}
+                                            </p>
+                                            {% if item.phone or item.email or item.website %}
+                                                <ul class="gm-card__contact">
+                                                    {% if item.phone %}<li><a href="tel:{{ item.phoneHref }}">{{ item.phone }}</a></li>{% endif %}
+                                                    {% if item.email %}<li><a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;{{ item.email|raw }}">{{ item.email|raw }}</a></li>{% endif %}
+                                                    {% if item.website %}<li><a href="{{ item.website }}" target="_blank" rel="noopener">{{ item.websiteLabel }}</a></li>{% endif %}
+                                                </ul>
+                                            {% endif %}
+                                            {% if item.description %}
+                                                <div class="gm-card__text">{{ item.description|raw }}</div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="gm-card__meta">
+                                            <span class="gm-card__distance" data-gm-distance hidden></span>
+                                            {% if gm_view != 'list' and item.lat is not null %}
+                                                <button type="button" class="gm-button gm-button--link" data-gm-show>{{ 'MSC.gm_show_on_map'|trans }}</button>
+                                            {% endif %}
+                                            {% if gm_route %}
+                                                <a class="gm-button gm-button--link" href="{{ item.route }}" target="_blank" rel="noopener">{{ 'MSC.gm_route'|trans }}</a>
+                                            {% endif %}
+                                        </div>
+                                    </article>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </section>
+                {% endfor %}
+            </div>
+            <p class="gm-empty" data-gm-empty hidden>{{ 'MSC.gm_empty'|trans }}</p>
+        </div>
+    </div>
+{% endblock %}
