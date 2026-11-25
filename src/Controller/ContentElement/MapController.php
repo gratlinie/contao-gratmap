@@ -14,6 +14,7 @@ use Contao\FilesModel;
 use Contao\StringUtil;
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
+use Gratlinie\GratMapBundle\Map\Continents;
 use Gratlinie\GratMapBundle\Map\TileProviders;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Request;
@@ -60,9 +61,15 @@ class MapController extends AbstractContentElementController
             $items[] = $this->buildItem($row, $model, $countryNames, $categoryTitles);
         }
 
-        usort($items, static function (array $a, array $b) use ($home): int {
-            return [$a['country'] !== $home, $a['countryName'], $a['postal'], $a['title']]
-                <=> [$b['country'] !== $home, $b['countryName'], $b['postal'], $b['title']];
+        $byContinent = 'continent' === $model->gmGroupBy;
+
+        usort($items, static function (array $a, array $b) use ($home, $byContinent): int {
+            $rank = static fn (array $i): array => $byContinent
+                ? [Continents::rank($i['continent']), $i['country'] !== $home]
+                : [$i['country'] !== $home];
+
+            return [...$rank($a), $a['countryName'], $a['postal'], $a['title']]
+                <=> [...$rank($b), $b['countryName'], $b['postal'], $b['title']];
         });
 
         $groups = $this->group($items, (string) $model->gmGroupBy, $home);
@@ -74,7 +81,14 @@ class MapController extends AbstractContentElementController
             $countryOptions[$code] = $countryNames[$code] ?? $code;
         }
 
+        $served = array_merge(...array_column($items, 'serviceCountries'));
+        $serviceOptions = array_intersect_key($countryNames, array_flip($served));
+
         $view = \in_array($model->gmView, ['map_list', 'map', 'list'], true) ? $model->gmView : 'map_list';
+        $serviceMap = (bool) $model->gmServiceMap
+            && 'list' !== $view
+            && \in_array('service', $filters, true)
+            && [] !== $serviceOptions;
         $radii = array_values(array_filter(array_map('intval', explode(',', (string) $model->gmRadii))));
 
         $tiles = TileProviders::resolve((string) $model->gmTileProvider, (string) $model->gmTileKey, (string) $model->gmTileUrl, StringUtil::decodeEntities((string) $model->gmTileAttribution))
@@ -92,6 +106,10 @@ class MapController extends AbstractContentElementController
             'tiles' => $tiles,
             'marker' => $this->markerConfig($model),
             'geocodeUrl' => $this->router->generate('gratmap_geocode'),
+            'serviceMap' => $serviceMap ? [
+                'url' => $this->asset('vendor/world/world-countries.geo.json'),
+                'countries' => $serviceOptions,
+            ] : null,
             'labels' => $this->labels(),
             'assets' => [
                 'leafletJs' => $this->asset('vendor/leaflet/leaflet.js'),
@@ -113,13 +131,18 @@ class MapController extends AbstractContentElementController
         $template->set('gm_sections', $sections);
         $template->set('gm_filters', [
             'radius' => \in_array('radius', $filters, true),
+            'service' => \in_array('service', $filters, true) && \count($serviceOptions) > 0,
             'country' => \in_array('country', $filters, true) && \count($countryOptions) > 1,
             'category' => \in_array('category', $filters, true) && \count($categoryTitles) > 0,
         ]);
         $template->set('gm_radii', $config['radii']);
         $template->set('gm_country_options', $countryOptions);
+        $template->set('gm_service_options', $serviceOptions);
         $template->set('gm_category_options', $categoryTitles);
         $template->set('gm_route', (bool) $model->gmRoute);
+        $template->set('gm_group_by', (string) $model->gmGroupBy);
+        $template->set('gm_list_style', 'open' === $model->gmListStyle ? 'open' : 'accordion');
+        $template->set('gm_columns', min(6, max(0, (int) $model->gmColumns)) ?: null);
         $template->set('gm_height', $this->sanitizeLength((string) $model->gmHeight));
         $template->set('gm_config', $config);
         $template->set('gm_tile_host', preg_replace('/^\{s\}\./', '', (string) parse_url((string) $tiles['url'], PHP_URL_HOST)));
@@ -184,15 +207,21 @@ class MapController extends AbstractContentElementController
             'city' => (string) $row['city'],
             'country' => $country,
             'countryName' => $countryNames[$country] ?? $country,
+            'continent' => Continents::of($country),
             'lat' => null === $lng ? null : $lat,
             'lng' => null === $lat ? null : $lng,
             'phone' => (string) $row['phone'],
             'phoneHref' => preg_replace('/[^\d+]/', '', (string) $row['phone']),
+            'fax' => (string) ($row['fax'] ?? ''),
             'email' => StringUtil::encodeEmail((string) $row['email']),
             'website' => $website,
             'websiteLabel' => preg_replace('#^https?://(www\.)?|/$#', '', $website),
             'logo' => $logo,
             'description' => StringUtil::restoreBasicEntities((string) $row['description']),
+            'serviceCountries' => array_values(array_filter(array_map(
+                static fn ($code): string => strtoupper(trim((string) $code)),
+                StringUtil::deserialize($row['serviceCountries'] ?? null, true),
+            ), static fn (string $code): bool => 1 === preg_match('/^[A-Z]{2}$/', $code))),
             'categories' => $categoryIds,
             'categoryTitles' => array_map(static fn (int $id): string => $categoryTitles[$id], $categoryIds),
             'route' => 'https://www.google.com/maps/dir/?api=1&destination='.rawurlencode(trim($row['street'].', '.$row['postal'].' '.$row['city'].', '.($countryNames[$country] ?? $country), ' ,')),
@@ -206,7 +235,7 @@ class MapController extends AbstractContentElementController
      */
     private function group(array $items, string $groupBy, string $home): array
     {
-        if (!\in_array($groupBy, ['country', 'postal'], true)) {
+        if (!\in_array($groupBy, ['continent', 'country', 'postal'], true)) {
             return [['key' => 'all', 'label' => '', 'country' => '', 'flag' => null, 'cities' => '', 'items' => $items]];
         }
 
@@ -215,7 +244,11 @@ class MapController extends AbstractContentElementController
         foreach ($items as $item) {
             $flag = null;
 
-            if ('postal' === $groupBy && $item['country'] === $home && '' !== $item['postal']) {
+            if ('continent' === $groupBy) {
+                $code = $item['continent'] ?: 'XX';
+                $key = 'continent-'.strtolower($code);
+                $label = $GLOBALS['TL_LANG']['MSC']['gm_continent'][$code] ?? $code;
+            } elseif ('postal' === $groupBy && $item['country'] === $home && '' !== $item['postal']) {
                 $digit = $item['postal'][0];
                 $key = 'postal-'.$digit;
                 $label = \sprintf($GLOBALS['TL_LANG']['MSC']['gm_postal_area'] ?? 'PLZ-Bereich %s', $digit);
@@ -295,7 +328,7 @@ class MapController extends AbstractContentElementController
     {
         $labels = [];
 
-        foreach (['locating', 'locateFailed', 'yourLocation', 'searching', 'rateLimit', 'notFound', 'countRadius', 'nearest', 'count', 'groupCount', 'groupCountOne'] as $key) {
+        foreach (['locating', 'locateFailed', 'yourLocation', 'searching', 'rateLimit', 'notFound', 'countRadius', 'nearest', 'count', 'groupCount', 'groupCountOne', 'service', 'serviceEmpty'] as $key) {
             $labels[$key] = (string) ($GLOBALS['TL_LANG']['MSC']['gm_js'][$key] ?? $key);
         }
 

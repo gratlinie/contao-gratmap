@@ -52,7 +52,7 @@
             this.config = JSON.parse(root.querySelector('[data-gm-config]').textContent);
             this.labels = this.config.labels;
             this.lang = document.documentElement.lang || 'de';
-            this.state = { country: '', category: '', origin: null, radius: 0 };
+            this.state = { service: '', country: '', category: '', origin: null, radius: 0 };
 
             this.form = root.querySelector('[data-gm-filter]');
             this.status = root.querySelector('[data-gm-status]');
@@ -66,6 +66,7 @@
                 id: Number(el.dataset.gmItem),
                 country: el.dataset.gmCountry,
                 categories: (el.dataset.gmCategories || '').split(',').filter(Boolean),
+                service: (el.dataset.gmService || '').split(',').filter(Boolean),
                 point: el.dataset.gmLat ? { lat: Number(el.dataset.gmLat), lng: Number(el.dataset.gmLng) } : null,
                 home: { parent: el.parentElement, index: [...el.parentElement.children].indexOf(el) },
                 distanceEl: el.querySelector('[data-gm-distance]'),
@@ -85,6 +86,7 @@
 
             const query = this.form.querySelector('[data-gm-query]');
             const radius = this.form.querySelector('[data-gm-radius]');
+            const service = this.form.querySelector('[data-gm-service]');
             const country = this.form.querySelector('[data-gm-country]');
             const category = this.form.querySelector('[data-gm-category]');
             const locate = this.form.querySelector('[data-gm-locate]');
@@ -108,6 +110,12 @@
                 if (this.state.origin) {
                     this.apply();
                 }
+            });
+
+            service?.addEventListener('change', () => {
+                this.state.service = service.value;
+                this.serviceLabel = service.options[service.selectedIndex]?.text || '';
+                this.apply();
             });
 
             country?.addEventListener('change', () => {
@@ -140,6 +148,8 @@
 
             this.form.addEventListener('reset', () => {
                 setTimeout(() => {
+                    this.state.service = '';
+                    this.serviceLabel = '';
                     this.state.country = '';
                     this.state.category = '';
                     this.state.origin = null;
@@ -189,6 +199,9 @@
         }
 
         matches(item) {
+            if (this.state.service && !item.service.includes(this.state.service)) {
+                return false;
+            }
             if (this.state.country && item.country !== this.state.country) {
                 return false;
             }
@@ -255,7 +268,7 @@
                 });
 
                 const groups = [...this.groups.querySelectorAll('[data-gm-group]')];
-                const filtered = Boolean(this.state.country || this.state.category);
+                const filtered = Boolean(this.state.service || this.state.country || this.state.category);
 
                 groups.forEach((group) => {
                     const visible = [...group.querySelectorAll('[data-gm-item]:not([hidden])')];
@@ -275,11 +288,11 @@
                 this.results.hidden = true;
                 this.groups.hidden = false;
                 shown = this.items.filter((item) => !item.el.hidden);
-                this.setStatus(this.state.country || this.state.category ? format(this.labels.count, shown.length) : '');
+                this.setStatus(this.statusText(shown.length));
             }
 
             if (this.resetButton) {
-                this.resetButton.hidden = !(origin || this.state.country || this.state.category);
+                this.resetButton.hidden = !(origin || this.state.service || this.state.country || this.state.category);
             }
 
             if (this.empty) {
@@ -288,6 +301,42 @@
 
             this.shown = shown;
             this.updateMap(fit);
+
+            if (this.state.service && shown.length === 1) {
+                this.openSingle(shown[0]);
+            } else if (!this.state.service) {
+                this.map?.closePopup();
+            }
+
+            this.paintCountries();
+        }
+
+        /**
+         * Sprechblase des einzigen Treffers öffnen. Der Marker hängt erst nach dem Hinzufügen zur
+         * Cluster-Gruppe an der Karte, deshalb auf den nächsten Frame warten und ggf. aus dem Cluster lösen.
+         */
+        openSingle(item) {
+            const marker = this.markers?.get(item.id);
+
+            if (!marker || !this.map) {
+                return;
+            }
+
+            requestAnimationFrame(() => {
+                if (this.layer.zoomToShowLayer && this.layer.hasLayer(marker)) {
+                    this.layer.zoomToShowLayer(marker, () => marker.openPopup());
+                } else {
+                    marker.openPopup();
+                }
+            });
+        }
+
+        statusText(count) {
+            if (this.state.service) {
+                const label = this.serviceLabel || this.state.service;
+                return format(count ? this.labels.service : this.labels.serviceEmpty, label);
+            }
+            return this.state.country || this.state.category ? format(this.labels.count, count) : '';
         }
 
         updateGroupHead(group, visible) {
@@ -309,49 +358,104 @@
             }
 
             const consent = this.mapEl.querySelector('[data-gm-consent]');
-            const privacy = window.PrivacyManager;
             const level = this.config.privacyLevel;
 
-            if (consent && level && typeof privacy?.hasAccess === 'function') {
-                if (!privacy.hasAccess(level)) {
-                    this.setupPrivacyManager(consent, privacy, level);
-                    return;
-                }
-            } else if (consent && !storage.get()) {
-                consent.querySelector('[data-gm-consent-accept]').addEventListener('click', () => {
-                    if (consent.querySelector('[data-gm-consent-remember]')?.checked) {
-                        storage.set();
-                    }
-                    consent.remove();
-                    this.initMap();
-                });
+            if (!consent) {
+                this.observeMap();
                 return;
             }
 
-            consent?.remove();
-            this.observeMap();
+            // Den Button sofort binden, damit er nie tot ist, auch waehrend wir auf den
+            // Privacy Manager warten.
+            this.bindOwnConsent(consent, !level);
+
+            if (!level) {
+                return;
+            }
+
+            // Auf den Privacy Manager warten: er wird je nach Theme erst nach diesem Skript
+            // definiert (bei EclipseX steckt er in der gebuendelten scripts.js). Wer hier sofort
+            // entscheidet, landet faelschlich in der eigenen Zwei-Klick-Loesung und bekommt die
+            // Freigabe des Besuchers nie mit.
+            this.whenPrivacyManager((privacy) => {
+                if (!privacy) {
+                    return; // kein Privacy Manager - die eigene Loesung bleibt
+                }
+
+                if (privacy.hasAccess(level)) {
+                    this.startMap(consent);
+                    return;
+                }
+
+                this.setupPrivacyManager(consent, privacy, level);
+            });
         }
 
-        setupPrivacyManager(consent, privacy, level) {
-            const start = () => {
-                if (consent.isConnected) {
-                    consent.remove();
-                    this.initMap();
+        /**
+         * Ruft done() mit dem Privacy Manager auf, sobald er samt jQuery bereitsteht - spaetestens
+         * kurz nach dem load-Event. Ist er dann nicht da, kommt done(null).
+         */
+        whenPrivacyManager(done) {
+            const ready = () => 'function' === typeof window.PrivacyManager?.hasAccess && 'function' === typeof window.jQuery;
+
+            if (ready()) {
+                done(window.PrivacyManager);
+                return;
+            }
+
+            const until = Date.now() + 5000;
+            const tick = () => {
+                if (ready()) {
+                    done(window.PrivacyManager);
+                } else if (Date.now() > until) {
+                    done(null);
+                } else {
+                    setTimeout(tick, 100);
                 }
             };
 
+            if ('complete' === document.readyState) {
+                tick();
+            } else {
+                window.addEventListener('load', tick, { once: true });
+            }
+        }
+
+        startMap(consent) {
+            if (consent?.isConnected) {
+                consent.remove();
+            }
+            this.initMap();
+        }
+
+        /** Eigene Zwei-Klick-Loesung. remember nur, wenn kein Privacy Manager zustaendig ist. */
+        bindOwnConsent(consent, allowRemember) {
+            if (allowRemember && storage.get()) {
+                this.startMap(consent);
+                return;
+            }
+
+            consent.querySelector('[data-gm-consent-accept]')?.addEventListener('click', () => {
+                if (allowRemember && consent.querySelector('[data-gm-consent-remember]')?.checked) {
+                    storage.set();
+                }
+                this.startMap(consent);
+            });
+        }
+
+        setupPrivacyManager(consent, privacy, level) {
             consent.querySelector('.gm-consent__remember')?.remove();
-            consent.querySelector('[data-gm-consent-accept]').addEventListener('click', start);
 
             const settings = consent.querySelector('[data-gm-consent-settings]');
-            if (settings && typeof privacy.optout === 'function') {
+
+            if (settings && 'function' === typeof privacy.optout) {
                 settings.hidden = false;
                 settings.addEventListener('click', () => privacy.optout());
             }
 
-            window.jQuery?.(document).on('Privacy.changed', () => {
+            window.jQuery(document).on('Privacy.changed', () => {
                 if (privacy.hasAccess(level)) {
-                    start();
+                    this.startMap(consent);
                 }
             });
         }
@@ -436,6 +540,83 @@
             });
 
             this.updateMap(true);
+            this.loadServiceMap();
+        }
+
+        /**
+         * Betreute Länder als anklickbare Flächen in die Karte zeichnen. Die Geometrie wird erst hier
+         * geladen - also nach der Einwilligung und nur, wenn die Option aktiv ist.
+         */
+        async loadServiceMap() {
+            const config = this.config.serviceMap;
+
+            if (!config || this.countryLayer) {
+                return;
+            }
+
+            let data;
+
+            try {
+                const response = await fetch(config.url, { headers: { Accept: 'application/json' } });
+                if (!response.ok) {
+                    return;
+                }
+                data = await response.json();
+            } catch {
+                return;
+            }
+
+            const L = window.L;
+            const served = config.countries;
+            this.countryByCode = new Map();
+
+            // overlayPane (z-index 400) liegt ueber den Kacheln und unter den Markern (markerPane, 600)
+            this.countryLayer = L.geoJSON(data, {
+                filter: (feature) => Boolean(served[feature.id]),
+                style: () => this.countryStyle(false),
+                onEachFeature: (feature, layer) => {
+                    this.countryByCode.set(feature.id, layer);
+                    layer.bindTooltip(served[feature.id], { sticky: true, direction: 'top', className: 'gm-country-tip' });
+                    layer.on({
+                        mouseover: () => this.state.service !== feature.id && layer.setStyle(this.countryStyle(false, true)),
+                        mouseout: () => this.state.service !== feature.id && layer.setStyle(this.countryStyle(false)),
+                        click: () => this.selectService(feature.id),
+                    });
+                },
+            }).addTo(this.map);
+
+            this.paintCountries();
+        }
+
+        countryStyle(active, hover = false) {
+            return {
+                className: 'gm-country',
+                weight: active ? 2 : 1,
+                color: '#fff',
+                fillOpacity: active ? 0.7 : hover ? 0.45 : 0.28,
+                opacity: 1,
+            };
+        }
+
+        /** Auswahl auf den Flächen nachziehen. */
+        paintCountries() {
+            this.countryLayer?.eachLayer((layer) => {
+                layer.setStyle(this.countryStyle(layer.feature.id === this.state.service));
+            });
+        }
+
+        /** Land auswählen - aus der Karte wie aus dem Auswahlfeld. */
+        selectService(code) {
+            const select = this.form?.querySelector('[data-gm-service]');
+
+            if (select) {
+                select.value = this.state.service === code ? '' : code;
+                select.dispatchEvent(new Event('change', { bubbles: true }));
+                return;
+            }
+
+            this.state.service = this.state.service === code ? '' : code;
+            this.apply();
         }
 
         popup(item) {
@@ -475,6 +656,15 @@
             const { origin } = this.state;
             let bounds = markers.length ? L.latLngBounds(markers.map((m) => m.getLatLng())) : null;
 
+            // Gewaehltes Land mitrahmen: der Besucher soll sein Land und den zustaendigen Standort
+            // zugleich sehen, statt auf den Standort heranzuspringen.
+            const country = this.state.service && this.countryByCode?.get(this.state.service);
+
+            if (country) {
+                const cb = country.getBounds();
+                bounds = bounds ? bounds.extend(cb) : cb;
+            }
+
             if (origin) {
                 this.originLayer = L.layerGroup([
                     L.circle(origin, { radius: this.state.radius * 1000, className: 'gm-radius', interactive: false }),
@@ -489,10 +679,10 @@
 
             const { zoom } = this.config;
 
-            if (bounds && zoom && !origin && !this.state.country && !this.state.category) {
+            if (bounds && zoom && !origin && !this.state.service && !this.state.country && !this.state.category) {
                 this.map.setView(bounds.getCenter(), zoom);
             } else if (bounds) {
-                this.map.fitBounds(bounds.pad(0.1), { maxZoom: origin ? 12 : 10 });
+                this.map.fitBounds(bounds.pad(0.1), { maxZoom: country ? 6 : origin ? 12 : 10 });
             } else {
                 this.map.setView([51, 10], 5);
             }

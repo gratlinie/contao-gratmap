@@ -9,8 +9,10 @@ $GLOBALS['TL_LANG']['tl_content']['gm_map_legend'] = 'Karte';
 $GLOBALS['TL_LANG']['tl_content']['gmArchives'] = ['Sammlungen', 'Standortsammlungen, die angezeigt werden.'];
 $GLOBALS['TL_LANG']['tl_content']['gmView'] = ['Ansicht', 'Karte, Liste oder beides.'];
 $GLOBALS['TL_LANG']['tl_content']['gmGroupBy'] = ['Liste gruppieren', 'Im Heimatland nach PLZ-Bereich, andere Länder nach Land.'];
+$GLOBALS['TL_LANG']['tl_content']['gmListStyle'] = ['Gruppen anzeigen', 'Zugeklappt als Akkordeon oder offen mit Überschrift. Ohne Gruppierung ohne Wirkung.'];
+$GLOBALS['TL_LANG']['tl_content']['gmColumns'] = ['Spalten', 'Feste Spaltenzahl der Liste auf großen Bildschirmen. Leer = so viele, wie nebeneinander passen.'];
 $GLOBALS['TL_LANG']['tl_content']['gmHomeCountry'] = ['Heimatland', 'Wird zuerst gelistet; das Land wird bei Adressen dort nicht ausgegeben.'];
-$GLOBALS['TL_LANG']['tl_content']['gmFilters'] = ['Filter', 'Land- und Kategorienfilter erscheinen nur, wenn es mehr als ein Land bzw. Kategorien gibt.'];
+$GLOBALS['TL_LANG']['tl_content']['gmFilters'] = ['Filter', 'Land- und Kategorienfilter erscheinen nur, wenn es mehr als ein Land bzw. Kategorien gibt. „Zuständigkeit“ nur, wenn an Standorten Länder hinterlegt sind.'];
 $GLOBALS['TL_LANG']['tl_content']['gmRadii'] = ['Umkreise (km)', 'Kommagetrennt, der zweite Wert ist vorausgewählt.'];
 $GLOBALS['TL_LANG']['tl_content']['gmRadiiInvalid'] = 'Bitte nur ganze Kilometerwerte, durch Komma getrennt, eingeben (z. B. 25,50,100).';
 $GLOBALS['TL_LANG']['tl_content']['gmRoute'] = ['Link „Route planen“', 'Öffnet Google Maps mit der Adresse als Ziel.'];
@@ -23,13 +25,15 @@ $GLOBALS['TL_LANG']['tl_content']['gmZoom'] = ['Start-Zoomstufe', 'Zoomstufe bei
 $GLOBALS['TL_LANG']['tl_content']['gmMarker'] = ['Eigener Marker', 'SVG, PNG oder WebP. Leer = Standard-Pin in der Akzentfarbe.'];
 $GLOBALS['TL_LANG']['tl_content']['gmMarkerSize'] = ['Markergröße (px)', ''];
 $GLOBALS['TL_LANG']['tl_content']['gmCluster'] = ['Punkte bündeln', 'Nahe Punkte zusammenfassen; Klick zoomt hinein.'];
+$GLOBALS['TL_LANG']['tl_content']['gmServiceMap'] = ['Länder anklickbar', 'Zeichnet die betreuten Länder als farbige Flächen in die Karte. Ein Klick wählt das Land wie das Auswahlfeld. Setzt den Filter „Zuständigkeit“ und hinterlegte Länder voraus; lädt zusätzlich 130 KB Ländergeometrie.'];
 $GLOBALS['TL_LANG']['tl_content']['gmConsent'] = ['Zwei-Klick-Lösung', 'Karte erst nach Klick laden (Datenschutz).'];
 $GLOBALS['TL_LANG']['tl_content']['gmPrivacyLevel'] = ['Privacy Manager (PCT)', 'Stufe im Privacy Manager von Premium Contao Themes, ab der die Karte ohne Klick lädt. Wird nur genutzt, wenn der Privacy Manager auf der Seite aktiv ist; sonst greift die Zwei-Klick-Lösung. OpenStreetMap ist dort Stufe 2.'];
 
 $GLOBALS['TL_LANG']['tl_content']['gm_ref'] = [
     'view' => ['map_list' => 'Karte und Liste', 'map' => 'Nur Karte', 'list' => 'Nur Liste'],
-    'groupBy' => ['' => 'Nicht gruppieren', 'country' => 'Nach Land', 'postal' => 'Nach PLZ-Bereich'],
-    'filters' => ['radius' => 'Umkreissuche', 'country' => 'Land', 'category' => 'Kategorie'],
+    'groupBy' => ['' => 'Nicht gruppieren', 'continent' => 'Nach Kontinent', 'country' => 'Nach Land', 'postal' => 'Nach PLZ-Bereich'],
+    'listStyle' => ['accordion' => 'Akkordeon (zugeklappt)', 'open' => 'Offen (alle Einträge sichtbar)'],
+    'filters' => ['radius' => 'Umkreissuche', 'service' => 'Zuständigkeit (Land wählen)', 'country' => 'Land', 'category' => 'Kategorie'],
     'tiles' => [
         'osm' => 'OpenStreetMap',
         'osm_de' => 'OpenStreetMap Deutschland',

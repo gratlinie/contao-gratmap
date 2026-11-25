@@ -670,3 +670,84 @@ details.gm-group > .gm-items {
         animation-duration: 0.01ms !important;
     }
 }
+
+/* Offene Gruppen (gmListStyle = open): Ueberschrift statt aufklappbarer Zeile */
+.gm--open .gm-group {
+    display: block;
+    border: 0;
+    background: none;
+    padding: 0;
+}
+
+.gm--open .gm-group + .gm-group {
+    margin-top: calc(var(--gm-gap) * 1.75);
+}
+
+.gm--open h3.gm-group__head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6em;
+    margin: 0 0 var(--gm-gap);
+    padding: 0 0 0.4em;
+    border-bottom: 1px solid var(--gm-border);
+    cursor: auto;
+    background: none;
+}
+
+.gm--open h3.gm-group__head:hover {
+    background: none;
+}
+
+.gm--open .gm-group__count {
+    color: var(--gm-muted);
+    font-weight: 400;
+    white-space: nowrap;
+}
+
+.gm--open .gm-group > .gm-items {
+    padding: 0;
+}
+
+/* Feste Spaltenzahl (gmColumns); darunter greift weiter auto-fill */
+@media (min-width: 60rem) {
+    .gm--fixed-cols .gm-items {
+        grid-template-columns: repeat(var(--gm-fixed-columns, 4), minmax(0, 1fr));
+    }
+}
+
+/* Lange E-Mail-Adressen und URLs duerfen umbrechen, sonst laufen sie in schmalen Spalten heraus */
+.gm-card__contact a,
+.gm-card__address {
+    overflow-wrap: anywhere;
+}
+
+/* Zuständigkeitsflächen (gmServiceMap) */
+.gm-country {
+    fill: var(--gm-accent);
+    cursor: pointer;
+    transition: fill-opacity 0.15s ease;
+}
+
+.gm-country--active {
+    fill: var(--gm-accent);
+}
+
+.gm-country-tip.leaflet-tooltip {
+    border: 0;
+    border-radius: calc(var(--gm-radius) * 0.6);
+    background: var(--gm-accent);
+    color: var(--gm-accent-contrast);
+    box-shadow: none;
+    font-weight: 600;
+    padding: 0.25em 0.6em;
+}
+
+.gm-country-tip.leaflet-tooltip-top::before {
+    border-top-color: var(--gm-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .gm-country {
+        transition: none;
+    }
+}

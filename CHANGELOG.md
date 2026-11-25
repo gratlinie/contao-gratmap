@@ -1,5 +1,33 @@
 # Changelog
 
+## 1.1.0 – 2026-11-23
+
+- Standort: Feld **„Zuständig für diese Länder“**. Ein Standort kann beliebig viele Länder betreuen, statt
+  je Land einen eigenen Datensatz zu pflegen.
+- Inhaltselement: neuer Filter **„Zuständigkeit (Land wählen)“**. Besucher wählen ihr Land und bekommen den
+  zuständigen Standort; die Karte zoomt darauf und öffnet die Sprechblase. Ist für ein Land nichts hinterlegt,
+  sagt die Statuszeile das.
+- Standort: Feld **Telefax**, wird in der Liste und in der Sprechblase ausgegeben.
+- Liste: Gruppierung **nach Kontinent** (UN-M49-Einteilung, Tabelle im Bundle – keine Netzabfrage).
+- Liste: **„Gruppen anzeigen“** – Akkordeon wie bisher oder offen mit Überschrift, alle Einträge sichtbar.
+- Liste: **„Spalten“** – feste Spaltenzahl (2–6) auf großen Bildschirmen; darunter weiter so viele,
+  wie nebeneinander passen.
+- Karte: **„Länder anklickbar“** – zeichnet die betreuten Länder als Flächen in die Karte. Klick wählt das
+  Land wie das Auswahlfeld, die Karte rahmt dann Land und zuständigen Standort zusammen ein. Die
+  Ländergeometrie (Natural Earth, gemeinfrei, 66 KB gzip) lädt erst nach der Einwilligung und nur, wenn
+  die Option aktiv ist; erzeugt mit `tools/build-countries.py`.
+- Liste: Lange E-Mail-Adressen brechen um, statt aus schmalen Spalten herauszulaufen.
+- **Behoben:** Die Anbindung an den Privacy Manager (PCT) griff nie. GratMap entschied beim Start, ob der
+  Privacy Manager zuständig ist – zu diesem Zeitpunkt ist er aber noch nicht definiert, weil EclipseX ihn in
+  der gebündelten `scripts.js` ausliefert, die nach `gratmap.js` lädt. Folge: GratMap zeigte immer seine
+  eigene Zwei-Klick-Lösung, und eine Freigabe im Banner blieb wirkungslos. GratMap wartet jetzt bis kurz nach
+  dem `load`-Event auf den Privacy Manager; der eigene Button ist währenddessen schon bedienbar.
+- Controller greift auf die neuen Spalten mit `??` zu, damit eine Installation zwischen Datei-Deploy und
+  `contao:migrate` nicht in Warnungen läuft.
+
+Alle neuen Felder sind standardmäßig aus bzw. auf den bisherigen Werten – bestehende Installationen
+sehen ohne Änderung im Backend genau das, was sie vorher gesehen haben.
+
 ## 1.0.1 – 2026-11-16
 
 - „Auf der Karte zeigen“ zoomt jetzt mindestens auf Stufe 14 an den Standort heran (vorher nur so weit, bis der Punkt aus dem Cluster gelöst war).

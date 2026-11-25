@@ -7,7 +7,7 @@ use Gratlinie\GratMapBundle\Map\TileProviders;
 
 $GLOBALS['TL_DCA']['tl_content']['palettes']['__selector__'][] = 'gmTileProvider';
 
-$GLOBALS['TL_DCA']['tl_content']['palettes']['gm_map'] = '{type_legend},type,headline;{gm_source_legend},gmArchives;{gm_view_legend},gmView,gmGroupBy,gmHomeCountry,gmFilters,gmRadii,gmRoute,size;{gm_map_legend},gmTileProvider,gmHeight,gmZoom,gmMarker,gmMarkerSize,gmCluster,gmConsent,gmPrivacyLevel;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},cssID;{invisible_legend:hide},invisible,start,stop';
+$GLOBALS['TL_DCA']['tl_content']['palettes']['gm_map'] = '{type_legend},type,headline;{gm_source_legend},gmArchives;{gm_view_legend},gmView,gmGroupBy,gmListStyle,gmColumns,gmHomeCountry,gmFilters,gmRadii,gmRoute,size;{gm_map_legend},gmTileProvider,gmHeight,gmZoom,gmMarker,gmMarkerSize,gmCluster,gmServiceMap,gmConsent,gmPrivacyLevel;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},cssID;{invisible_legend:hide},invisible,start,stop';
 
 $GLOBALS['TL_DCA']['tl_content']['subpalettes']['gmTileProvider_custom'] = 'gmTileUrl,gmTileAttribution';
 
@@ -31,10 +31,23 @@ $GLOBALS['TL_DCA']['tl_content']['fields'] += [
     ],
     'gmGroupBy' => [
         'inputType' => 'select',
-        'options' => ['', 'country', 'postal'],
+        'options' => ['', 'continent', 'country', 'postal'],
         'reference' => &$GLOBALS['TL_LANG']['tl_content']['gm_ref']['groupBy'],
         'eval' => ['tl_class' => 'w50'],
         'sql' => ['type' => 'string', 'length' => 16, 'default' => 'postal'],
+    ],
+    'gmListStyle' => [
+        'inputType' => 'select',
+        'options' => ['accordion', 'open'],
+        'reference' => &$GLOBALS['TL_LANG']['tl_content']['gm_ref']['listStyle'],
+        'eval' => ['tl_class' => 'w50'],
+        'sql' => ['type' => 'string', 'length' => 16, 'default' => 'accordion'],
+    ],
+    'gmColumns' => [
+        'inputType' => 'select',
+        'options' => [2, 3, 4, 5, 6],
+        'eval' => ['includeBlankOption' => true, 'blankOptionLabel' => '-', 'tl_class' => 'w50'],
+        'sql' => ['type' => 'smallint', 'unsigned' => true, 'default' => 0],
     ],
     'gmHomeCountry' => [
         'inputType' => 'select',
@@ -44,7 +57,7 @@ $GLOBALS['TL_DCA']['tl_content']['fields'] += [
     ],
     'gmFilters' => [
         'inputType' => 'checkbox',
-        'options' => ['radius', 'country', 'category'],
+        'options' => ['radius', 'service', 'country', 'category'],
         'reference' => &$GLOBALS['TL_LANG']['tl_content']['gm_ref']['filters'],
         'eval' => ['multiple' => true, 'tl_class' => 'clr'],
         'sql' => ['type' => 'blob', 'notnull' => false],
@@ -106,6 +119,11 @@ $GLOBALS['TL_DCA']['tl_content']['fields'] += [
         'inputType' => 'checkbox',
         'eval' => ['tl_class' => 'w50 m12'],
         'sql' => ['type' => 'boolean', 'default' => true],
+    ],
+    'gmServiceMap' => [
+        'inputType' => 'checkbox',
+        'eval' => ['tl_class' => 'w50 m12'],
+        'sql' => ['type' => 'boolean', 'default' => false],
     ],
     'gmPrivacyLevel' => [
         'inputType' => 'select',

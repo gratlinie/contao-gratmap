@@ -10,9 +10,9 @@
     {% endadd %}
 
     {% set uid = 'gm-' ~ data.id %}
-    {% set has_filter = gm_filters.radius or gm_filters.country or gm_filters.category %}
+    {% set has_filter = gm_filters.radius or gm_filters.service or gm_filters.country or gm_filters.category %}
 
-    <div class="gm gm--{{ gm_view }}" data-gm>
+    <div class="gm gm--{{ gm_view }} gm--{{ gm_list_style }}{% if gm_columns %} gm--fixed-cols{% endif %}" data-gm{% if gm_columns %} style="--gm-fixed-columns: {{ gm_columns }}"{% endif %}>
         <script type="application/json" data-gm-config>{{ gm_config|json_encode(constant('JSON_HEX_TAG') b-or constant('JSON_HEX_AMP') b-or constant('JSON_UNESCAPED_UNICODE'))|raw }}</script>
 
         {% if has_filter %}
@@ -27,6 +27,17 @@
                         <select id="{{ uid }}-r" name="r" data-gm-radius>
                             {% for radius in gm_radii %}
                                 <option value="{{ radius }}"{% if loop.index == 2 or gm_radii|length == 1 %} selected{% endif %}>{{ radius }} km</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                {% endif %}
+                {% if gm_filters.service %}
+                    <div class="gm-filter__field gm-filter__field--service">
+                        <label for="{{ uid }}-s">{{ 'MSC.gm_service'|trans }}</label>
+                        <select id="{{ uid }}-s" name="s" autocomplete="country" data-gm-service>
+                            <option value="">{{ 'MSC.gm_service_blank'|trans }}</option>
+                            {% for code, name in gm_service_options %}
+                                <option value="{{ code }}">{{ name }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -81,26 +92,28 @@
         <div class="gm-list" data-gm-list{% if gm_view == 'map' %} hidden{% endif %}>
             <ol class="gm-items gm-items--results" data-gm-results hidden></ol>
             {% set has_sections = gm_sections|length > 1 %}
-            {% set card_tag = has_sections ? 'h4' : 'h3' %}
+            {% set card_tag = (has_sections or gm_list_style == 'open') ? 'h4' : 'h3' %}
             <div class="gm-groups" data-gm-groups>
                 {% for section in gm_sections %}
                     {% if section.label %}<section class="gm-section" data-gm-section>
                         <h3 class="gm-section__title">{% if section.flag %}<img class="gm-flag" src="{{ section.flag }}" alt="" width="20" height="15">{% endif %}{{ section.label }}</h3>
                     {% endif %}
                 {% for group in section.groups %}
-                    {% set group_tag = group.label ? 'details' : 'div' %}
+                    {% set open = gm_list_style == 'open' %}
+                    {% set group_tag = group.label ? (open ? 'section' : 'details') : 'div' %}
                     <{{ group_tag }} class="gm-group" data-gm-group>
                         {% if group.label %}
-                            <summary class="gm-group__head">
+                            {% set head_tag = open ? 'h3' : 'summary' %}
+                            <{{ head_tag }} class="gm-group__head">
                                 <span class="gm-group__title">{% if group.flag %}<img class="gm-flag" src="{{ group.flag }}" alt="" width="20" height="15">{% endif %}{{ group.label }}</span>
                                 <span class="gm-group__count" data-gm-group-count>{{ (group.items|length == 1 ? 'MSC.gm_group_count_one' : 'MSC.gm_group_count')|trans([group.items|length]) }}</span>
-                                <span class="gm-group__cities" data-gm-group-cities>{{ group.cities }}</span>
-                                <span class="gm-group__icon" aria-hidden="true"></span>
-                            </summary>
+                                {% if not open %}<span class="gm-group__cities" data-gm-group-cities>{{ group.cities }}</span>{% endif %}
+                                {% if not open %}<span class="gm-group__icon" aria-hidden="true"></span>{% endif %}
+                            </{{ head_tag }}>
                         {% endif %}
                         <ul class="gm-items">
                             {% for item in group.items %}
-                                <li class="gm-item" data-gm-item="{{ item.id }}" data-gm-country="{{ item.country }}" data-gm-city="{{ item.city }}" data-gm-categories="{{ item.categories|join(',') }}"{% if item.lat is not null %} data-gm-lat="{{ item.lat }}" data-gm-lng="{{ item.lng }}"{% endif %}>
+                                <li class="gm-item" data-gm-item="{{ item.id }}" data-gm-country="{{ item.country }}" data-gm-city="{{ item.city }}" data-gm-categories="{{ item.categories|join(',') }}"{% if item.serviceCountries %} data-gm-service="{{ item.serviceCountries|join(',') }}"{% endif %}{% if item.lat is not null %} data-gm-lat="{{ item.lat }}" data-gm-lng="{{ item.lng }}"{% endif %}>
                                     <article class="gm-card">
                                         {% if item.logo %}
                                             <div class="gm-card__logo">{{ include('@Contao/component/_figure.html.twig', {figure: item.logo}) }}</div>
@@ -113,11 +126,12 @@
                                             <p class="gm-card__address">
                                                 {% if item.contact %}{{ item.contact }}<br>{% endif %}
                                                 {% if item.street %}{{ item.street }}<br>{% endif %}
-                                                {{ item.postal }} {{ item.city }}{% if item.country != gm_config.home %}<br>{{ item.countryName }}{% endif %}
+                                                {{ item.postal }} {{ item.city }}{% if item.country != gm_config.home or gm_group_by == 'continent' %}<br>{{ item.countryName }}{% endif %}
                                             </p>
-                                            {% if item.phone or item.email or item.website %}
+                                            {% if item.phone or item.fax or item.email or item.website %}
                                                 <ul class="gm-card__contact">
                                                     {% if item.phone %}<li><a href="tel:{{ item.phoneHref }}">{{ item.phone }}</a></li>{% endif %}
+                                                    {% if item.fax %}<li class="gm-card__fax">{{ 'MSC.gm_fax'|trans }} {{ item.fax }}</li>{% endif %}
                                                     {% if item.email %}<li><a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;{{ item.email|raw }}">{{ item.email|raw }}</a></li>{% endif %}
                                                     {% if item.website %}<li><a href="{{ item.website }}" target="_blank" rel="noopener">{{ item.websiteLabel }}</a></li>{% endif %}
                                                 </ul>

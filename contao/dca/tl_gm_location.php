@@ -41,7 +41,7 @@ $GLOBALS['TL_DCA']['tl_gm_location'] = [
         ],
     ],
     'palettes' => [
-        'default' => '{title_legend},title,contact,categories;{address_legend},street,postal,city,country;{geo_legend},latitude,longitude,mapPicker;{contact_legend},phone,email,website;{media_legend},logo;{text_legend:hide},description;{publish_legend},published,start,stop',
+        'default' => '{title_legend},title,contact,categories;{address_legend},street,postal,city,country;{service_legend:hide},serviceCountries;{geo_legend},latitude,longitude,mapPicker;{contact_legend},phone,fax,email,website;{media_legend},logo;{text_legend:hide},description;{publish_legend},published,start,stop',
     ],
     'fields' => [
         'id' => [
@@ -106,6 +106,12 @@ $GLOBALS['TL_DCA']['tl_gm_location'] = [
             'eval' => ['mandatory' => true, 'chosen' => true, 'tl_class' => 'w50'],
             'sql' => ['type' => 'string', 'length' => 2, 'default' => 'DE'],
         ],
+        'serviceCountries' => [
+            'inputType' => 'checkboxWizard',
+            'options_callback' => static fn (): array => System::getContainer()->get('contao.intl.countries')->getCountries(),
+            'eval' => ['multiple' => true, 'tl_class' => 'clr'],
+            'sql' => ['type' => 'blob', 'notnull' => false],
+        ],
         'latitude' => [
             'inputType' => 'text',
             'eval' => ['maxlength' => 16, 'rgxp' => 'gmLatitude', 'tl_class' => 'w50'],
@@ -122,6 +128,11 @@ $GLOBALS['TL_DCA']['tl_gm_location'] = [
         ],
         'phone' => [
             'search' => true,
+            'inputType' => 'text',
+            'eval' => ['maxlength' => 64, 'rgxp' => 'phone', 'decodeEntities' => true, 'tl_class' => 'w50'],
+            'sql' => ['type' => 'string', 'length' => 64, 'default' => ''],
+        ],
+        'fax' => [
             'inputType' => 'text',
             'eval' => ['maxlength' => 64, 'rgxp' => 'phone', 'decodeEntities' => true, 'tl_class' => 'w50'],
             'sql' => ['type' => 'string', 'length' => 64, 'default' => ''],

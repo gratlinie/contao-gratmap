@@ -9,6 +9,8 @@ $GLOBALS['TL_LANG']['tl_content']['gm_map_legend'] = 'Map';
 $GLOBALS['TL_LANG']['tl_content']['gmArchives'] = ['Collections', 'Location collections to display.'];
 $GLOBALS['TL_LANG']['tl_content']['gmView'] = ['View', 'Map, list or both.'];
 $GLOBALS['TL_LANG']['tl_content']['gmGroupBy'] = ['Group list', 'Home country by postcode area, other countries by country.'];
+$GLOBALS['TL_LANG']['tl_content']['gmListStyle'] = ['Show groups', 'Collapsed as an accordion or open with a heading. No effect without grouping.'];
+$GLOBALS['TL_LANG']['tl_content']['gmColumns'] = ['Columns', 'Fixed number of list columns on large screens. Empty = as many as fit.'];
 $GLOBALS['TL_LANG']['tl_content']['gmHomeCountry'] = ['Home country', 'Listed first; the country is omitted from addresses there.'];
 $GLOBALS['TL_LANG']['tl_content']['gmFilters'] = ['Filters', 'Country and category filters only appear if there is more than one country or any categories.'];
 $GLOBALS['TL_LANG']['tl_content']['gmRadii'] = ['Radii (km)', 'Comma-separated, the second value is preselected.'];
@@ -23,13 +25,15 @@ $GLOBALS['TL_LANG']['tl_content']['gmZoom'] = ['Initial zoom level', 'Zoom level
 $GLOBALS['TL_LANG']['tl_content']['gmMarker'] = ['Custom marker', 'SVG, PNG or WebP. Empty = default pin in the accent colour.'];
 $GLOBALS['TL_LANG']['tl_content']['gmMarkerSize'] = ['Marker size (px)', ''];
 $GLOBALS['TL_LANG']['tl_content']['gmCluster'] = ['Cluster points', 'Group nearby points; click zooms in.'];
+$GLOBALS['TL_LANG']['tl_content']['gmServiceMap'] = ['Clickable countries', 'Draws the served countries as coloured shapes on the map. A click selects the country like the select field. Requires the "service area" filter and assigned countries; loads an extra 130 KB of country geometry.'];
 $GLOBALS['TL_LANG']['tl_content']['gmConsent'] = ['Two-click solution', 'Load the map only after a click (privacy).'];
 $GLOBALS['TL_LANG']['tl_content']['gmPrivacyLevel'] = ['Privacy Manager (PCT)', 'Level in the Premium Contao Themes Privacy Manager from which the map loads without a click. Only used when the Privacy Manager is active on the page; otherwise the two-click solution applies. OpenStreetMap is level 2 there.'];
 
 $GLOBALS['TL_LANG']['tl_content']['gm_ref'] = [
     'view' => ['map_list' => 'Map and list', 'map' => 'Map only', 'list' => 'List only'],
-    'groupBy' => ['' => 'No grouping', 'country' => 'By country', 'postal' => 'By postcode area'],
-    'filters' => ['radius' => 'Radius search', 'country' => 'Country', 'category' => 'Category'],
+    'groupBy' => ['' => 'No grouping', 'continent' => 'By continent', 'country' => 'By country', 'postal' => 'By postcode area'],
+    'listStyle' => ['accordion' => 'Accordion (collapsed)', 'open' => 'Open (all entries visible)'],
+    'filters' => ['radius' => 'Radius search', 'service' => 'Service area (pick a country)', 'country' => 'Country', 'category' => 'Category'],
     'tiles' => [
         'osm' => 'OpenStreetMap',
         'osm_de' => 'OpenStreetMap Germany',
