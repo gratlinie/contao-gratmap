@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.1 – 2026-11-26
+
+- Lizenz **MIT** (vorher proprietär), LICENSE-Datei im Paket.
+- Auf Packagist: Installation per `composer require gratlinie/contao-gratmap` oder über den Contao Manager,
+  ohne Repository-Eintrag. Logo, Schlagwörter und Support-Links in der `composer.json`.
+
 ## 1.1.0 – 2026-11-23
 
 - Standort: Feld **„Zuständig für diese Länder“**. Ein Standort kann beliebig viele Länder betreuen, statt

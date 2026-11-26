@@ -1,14 +1,32 @@
 {
     "name": "gratlinie/contao-gratmap",
-    "description": "GratMap – Standort- und Händlerkarten mit Umkreissuche für Contao",
+    "description": "GratMap – Standort- und Händlerkarten mit Umkreissuche für Contao: Leaflet/OpenStreetMap, Cluster, Liste, Länder- und Kategorienfilter, datenschutzfreundlich",
+    "keywords": [
+        "contao",
+        "map",
+        "karte",
+        "standortkarte",
+        "store-locator",
+        "haendlersuche",
+        "umkreissuche",
+        "leaflet",
+        "openstreetmap",
+        "marker-cluster",
+        "gratframe"
+    ],
     "type": "contao-bundle",
-    "license": "proprietary",
+    "license": "MIT",
+    "homepage": "https://github.com/gratlinie/contao-gratmap",
     "authors": [
         {
             "name": "Gratlinie",
             "email": "mail@gratlinie.de"
         }
     ],
+    "support": {
+        "issues": "https://github.com/gratlinie/contao-gratmap/issues",
+        "source": "https://github.com/gratlinie/contao-gratmap"
+    },
     "require": {
         "php": "^8.2",
         "contao/core-bundle": "^5.7",

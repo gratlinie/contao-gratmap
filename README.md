@@ -1,3 +1,5 @@
+<img src="logo.svg" width="96" height="96" alt="">
+
 # GratMap
 
 Standortkarte für Contao 5.7: Händler, Niederlassungen, Ansprechpartner – als Karte (Leaflet, Cluster) und/oder
@@ -8,21 +10,12 @@ Liste mit Umkreissuche, Länder- und Kategorienfilter. Mehrsprachig, mehrere Lä
 
 ## Installation
 
-Das Paket liegt (noch) nicht auf Packagist. Repository in der `composer.json` der Installation eintragen:
-
-```json
-"repositories": [
-    { "type": "vcs", "url": "https://github.com/gratlinie/contao-gratmap" }
-]
-```
-
 ```bash
 composer require gratlinie/contao-gratmap:^1.0
 php vendor/bin/contao-console contao:migrate
 ```
 
-Im Contao Manager danach „Paket hinzufügen“ → `gratlinie/contao-gratmap` bzw. die Composer-Dateien hochladen und
-„Composer install“ ausführen, anschließend die Datenbank aktualisieren.
+Oder im Contao Manager nach „GratMap“ suchen, installieren und die Datenbank aktualisieren.
 
 Lokale Entwicklung mit Path-Repository:
 
@@ -32,3 +25,8 @@ composer require gratlinie/contao-gratmap:@dev
 ```
 
 Dokumentation: [docs/gratmap.md](docs/gratmap.md)
+
+## Lizenz
+
+MIT, siehe [LICENSE](LICENSE). Mitgelieferte Bibliotheken: Leaflet (BSD-2-Clause), Leaflet.markercluster (MIT),
+flag-icons (MIT), Ländergeometrie von Natural Earth (gemeinfrei) – Lizenzhinweise in `public/vendor/`.
