@@ -12,6 +12,8 @@
 
 ### Koordinaten
 
+![Standort im Backend: Adresse, Position auf der Karte mit verschiebbarem Marker, Kontakt](img/backend-location.webp)
+
 - Bleiben Breiten-/Längengrad leer, ermittelt GratMap sie beim Speichern aus der Adresse
   (OpenStreetMap/Nominatim, serverseitig, 30 Tage gecacht). Findet sich nichts, erscheint ein Hinweis.
 - Im Abschnitt „Position auf der Karte“ lässt sich der Punkt per Klick oder Ziehen korrigieren;
@@ -28,6 +30,8 @@ Das Feld ist unabhängig vom Feld **Land** in der Adresse: dort steht, wo der St
 *zuständig* ist. Ein Land darf bei mehreren Standorten stehen – dann zeigt der Filter alle.
 
 ## Inhaltselement „Standortkarte“
+
+![Filter, Karte mit Clustern und Liste nach PLZ-Bereich, eine Gruppe aufgeklappt](img/frontend.webp)
 
 | Feld | Wirkung |
 |---|---|
@@ -49,6 +53,9 @@ Das Feld ist unabhängig vom Feld **Land** in der Adresse: dort steht, wo der St
 | Länder anklickbar | Zeichnet die betreuten Länder als Flächen in die Karte (siehe unten). Setzt den Filter „Zuständigkeit“ voraus |
 | Zwei-Klick-Lösung | Karte (Kacheln) erst nach Klick laden, optional „immer laden“ (localStorage) |
 | Privacy Manager (PCT) | Stufe im Privacy Manager von Premium Contao Themes (Standard 2, wie OpenStreetMap dort). Ist er auf der Seite aktiv, lädt die Karte ohne Klick, sobald die Stufe freigegeben ist. GratMap wartet dafür bis kurz nach dem `load`-Event, weil manche Themes den Privacy Manager erst nach `gratmap.js` ausliefern – auch direkt nach der Auswahl im Opt-in. Ohne Freigabe zeigt der Platzhalter „Karte laden“ (einmalig) und „Datenschutz-Einstellungen ändern“. Leer = PCT ignorieren |
+
+
+![Einstellungen des Inhaltselements: Sammlungen, Darstellung und Filter, Karte](img/backend-element.webp)
 
 ### Gruppierung nach Kontinent
 

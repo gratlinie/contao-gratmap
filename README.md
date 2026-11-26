@@ -5,6 +5,8 @@
 Standortkarte für Contao 5.7: Händler, Niederlassungen, Ansprechpartner – als Karte (Leaflet, Cluster) und/oder
 Liste mit Umkreissuche, Länder- und Kategorienfilter. Mehrsprachig, mehrere Länder, datenschutzfreundlich.
 
+![Standortkarte mit Umkreissuche, Clustern und Liste nach PLZ-Bereich](docs/img/frontend.webp)
+
 - Paket: `gratlinie/contao-gratmap`, Namespace `Gratlinie\GratMapBundle`, Präfix `gm`
 - Voraussetzungen: PHP ≥ 8.2, Contao 5.7
 
